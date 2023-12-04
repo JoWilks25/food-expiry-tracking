@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "food-expiry-tracking",
+    "slug": "food-expiry-tracking",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "food-expiry-tracking"
+}
