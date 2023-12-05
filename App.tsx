@@ -9,7 +9,7 @@ import Item, { getItem, getItemCount } from './components/Items';
 import ListHeaderComponent from './components/ListHeaderComponent';
 import ModalView from './components/ModalView';
 import dummyData from './dummyData';
-import { styles } from './styles';
+import { styles } from './styles/styles';
 
 
 const App = () => {

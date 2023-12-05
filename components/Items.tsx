@@ -5,7 +5,7 @@ import {
   Button,
 } from 'react-native';
 import { GroceryItemType } from '../dummyData';
-import { styles } from '../styles';
+import { styles } from '../styles/styles';
 
 export const getItem = (data: GroceryItemType, index: number): unknown => {
   return {

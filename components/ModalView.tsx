@@ -6,7 +6,8 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
-import { styles } from '../styles';
+import { styles } from '../styles/styles';
+
 
 interface IProps {
   modalVisible: boolean;

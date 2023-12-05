@@ -1,6 +1,6 @@
 import { StyleSheet, StatusBar } from "react-native";
 
-export const styles = StyleSheet.create({
+export const styles: any = StyleSheet.create({
   // LIST STYLES
   container: {
     flex: 1,
