@@ -13,6 +13,8 @@ import {
   Alert,
   Pressable,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import dummyData, { GroceryItemType } from './dummyData';
 
 type ItemData = {
   id: string;
@@ -20,26 +22,47 @@ type ItemData = {
   date: string;
 };
 
-const getItem = (_data: unknown, index: number): ItemData => ({
-  id: Math.random().toString(12).substring(0),
-  title: `Item ${index + 1}`,
-  date: new Date().toDateString(),
-});
+const getItem = (data: GroceryItemType, index: number): unknown => {
+  return {
+    tempId: index,
+    ...data[index]
+  }
+};
 
-const getItemCount = (_data: unknown) => 50;
+const getItemCount = (_data: unknown) => _data.length;
 
 type ItemProps = {
   title: string;
   date: string;
 };
 
-const Item = ({title, date}: ItemProps) => (
+const Item = ({ title, date }: ItemProps) => (
   <View style={styles.item}>
     <Text style={styles.date}>{date}</Text>
     <Text style={styles.title}>{title}</Text>
     <Button title="Edit" onPress={() => console.log(`Clicked ${title}`)} />
   </View>
 );
+
+const ListHeaderComponent = () => {
+  return (
+    <View style={styles.headerView}>
+      <Icon.Button
+        name={true ? 'sort-amount-asc' : 'sort-amount-desc'}
+        // backgroundColor="#3b5998"
+        onPress={() => console.log('sort by date')}
+      >
+       Expiry Date
+      </Icon.Button>
+      <Icon.Button
+        name={true ? 'sort-alpha-asc' : 'sort-alpha-desc'}
+        onPress={() => console.log('sort by alphabetical')}
+      >
+        Alphabetical
+      </Icon.Button>
+    </View>
+  )
+}
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -77,33 +100,30 @@ const App = () => {
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
-        renderItem={({item}) => <Item title={item.title} date={item.date} />}
-        keyExtractor={item => item.id}
+        renderItem={({ item }) => <Item title={item.name} date={item.expiryDate} />}
+        keyExtractor={item => item.tempId}
         getItemCount={getItemCount}
         getItem={getItem}
-        ListHeaderComponent={
-          <View style={styles.headerView}>
-            <Button title="Date Sort" onPress={() => console.log('Sort')} />
-            <Button title="Alphabetical Sort" onPress={() => console.log('Snort')} />
-          </View>
-        }
+        data={dummyData}
+        ListHeaderComponent={<ListHeaderComponent/>}
+        stickyHeaderIndices={[0]}
       />
-        <TouchableOpacity
-          activeOpacity={0.7}
-          onPress={clickHandler}
-          style={styles.touchableOpacityStyle}>
-          <Image
-            // FAB using TouchableOpacity with an image
-            // For online image
-            source={{
-              uri:
-                'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
-            }}
-            // For local image
-            //source={require('./images/float-add-icon.png')}
-            style={styles.floatingButtonStyle}
-          />
-        </TouchableOpacity>
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={clickHandler}
+        style={styles.touchableOpacityStyle}>
+        <Image
+          // FAB using TouchableOpacity with an image
+          // For online image
+          source={{
+            uri:
+              'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
+          }}
+          // For local image
+          //source={require('./images/float-add-icon.png')}
+          style={styles.floatingButtonStyle}
+        />
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -123,10 +143,10 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   title: {
-    fontSize: 32,
+    fontSize: 20,
   },
   date: {
-    fontSize: 32,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   touchableOpacityStyle: {
@@ -144,10 +164,10 @@ const styles = StyleSheet.create({
     height: 50,
     //backgroundColor:'black'
   },
-  headerView:{
+  headerView: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     marginTop: 4,
   },
