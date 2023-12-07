@@ -16,13 +16,14 @@ const ListHeaderComponent = ({sortBy, setSortBy}: ListHeaderComponentProps) => {
     <View style={styles.headerView}>
       <Icon.Button
         name={sortBy.sortName === 'expiryDate' && sortBy.sortOrder === 'asc' ? 'sort-amount-asc' : 'sort-amount-desc'}
-        // backgroundColor="#3b5998"
+        backgroundColor={sortBy.sortName === 'expiryDate' ? '#3b5998' : "lightgrey"}
         onPress={() => setSortBy({ sortName: 'expiryDate', sortOrder: sortBy.sortOrder === 'asc' ? 'desc' : 'asc' })}
       >
        Expiry Date
       </Icon.Button>
       <Icon.Button
         name={sortBy.sortName === 'name' && sortBy.sortOrder === 'asc' ? 'sort-alpha-asc' : 'sort-alpha-desc'}
+        backgroundColor={sortBy.sortName === 'name' ? '#3b5998' : "lightgrey"}
         onPress={() => setSortBy({ sortName: 'name', sortOrder: sortBy.sortOrder === 'asc' ? 'desc' : 'asc' })}
       >
         Alphabetical
