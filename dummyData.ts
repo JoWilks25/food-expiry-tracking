@@ -1,69 +1,57 @@
-export type GroceryItemType = {
-  id: number,
-  name: string,
-  expiryDate: string,
-  addDate: string,
-  units: number, // Number of units
-  // quantity: Number,
-  // quantityMeasure: String,
-  // price: Number,
-  // priceType: String,
+export interface GroceryItemType {
+  id: number;
+  name: string;
+  expiryDate: string;
+  addDate: string;
+  units: number; // Number of units
+  // quantity: number;
+  // quantityMeasure: string;
+  // price: number;
+  // priceType: string;
 }
 
 const dummyData: GroceryItemType[] = [
   {
     id: 6,
     name: 'FYFFES RAINFOREST ALLIANCE BANANAS',
-    expiryDate: '25/11/2023',
-    addDate: '25/11/2023',
+    expiryDate: '2023-11-25',
+    addDate: '2023-11-25',
     units: 1,
-    // price: 10.89,
-    // priceType: '£',
   },
   {
     id: 1,
     name: 'M&S OAKHAM GOLD CHICKEN BREAST FILLETS',
-    expiryDate: '26/11/2023',
-    addDate: '26/11/2023',
+    expiryDate: '2023-11-26',
+    addDate: '2023-11-26',
     units: 1,
-    // price: 14.25,
-    // priceType: '£',
   },
   {
     id: 2,
     name: 'JACKSONS JOY FARMHOUSE WHOLEMEAL',
-    expiryDate: '26/11/2023',
-    addDate: '26/11/2023',
+    expiryDate: '2023-11-26',
+    addDate: '2023-11-26',
     units: 1,
-    // price: 14.25,
-    // priceType: '£',
-  },
-  {
-    id: 3,
-    name: 'FINNEBROGUE NAKED 12 GOOD LITTLE COMPANY CHIPOLATAS',
-    expiryDate: '28/11/2023',
-    addDate: '28/11/2023',
-    units: 1,
-    // price: 13.75,
-    // priceType: '£',
   },
   {
     id: 4,
     name: 'ARLA LACTOFREE SEMI SKIMMED MILK DRINK',
-    expiryDate: '30/11/2023',
-    addDate: '30/11/2023',
+    expiryDate: '2023-11-30',
+    addDate: '2023-11-30',
     units: 1,
-    // price: 23.90,
-    // priceType: '£',
+  },
+  {
+    id: 3,
+    name: 'FINNEBROGUE NAKED 12 GOOD LITTLE COMPANY CHIPOLATAS',
+    expiryDate: '2023-11-28',
+    addDate: '2023-11-28',
+    units: 1,
   },
   {
     id: 5,
-    name: 'ARLA LACTOFREE SEMI SKIMMED MILK DRINK',
-    expiryDate: '30/11/2023',
-    addDate: '30/11/2023',
+    name: "DINO'S FAMOUS SWEET STACKER PICKLES 530g 1/12.50",
+    expiryDate: '2023-11-30',
+    addDate: '2023-11-30',
     units: 1,
-    // price: 23.90,
-    // priceType: '£',
   },
 ]
 export default dummyData

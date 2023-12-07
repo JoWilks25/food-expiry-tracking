@@ -7,19 +7,18 @@ import {
 import { GroceryItemType } from '../dummyData';
 import { styles } from '../styles/styles';
 
-export const getItem = (data: GroceryItemType, index: number): unknown => {
+interface ItemProps extends GroceryItemType {
+  tempId: number;
+}
+export const getItem = (data: GroceryItemType, index: number): ItemProps => {
   return {
     tempId: index,
     ...data[index]
   }
 };
 
-export const getItemCount = (_data: unknown) => _data.length;
+export const getItemCount = (data: ItemProps): number => data.length;
 
-type ItemProps = {
-  title: string;
-  date: string;
-};
 
 const Item = ({ title, date }: ItemProps) => (
   <View style={styles.item}>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   SafeAreaView,
   VirtualizedList,
@@ -11,9 +11,41 @@ import ModalView from './components/ModalView';
 import dummyData from './dummyData';
 import { styles } from './styles/styles';
 
+type sortNameType = 'name' | 'expiryDate';
+type sortOrderType = 'asc' | 'desc';
+export type SortByType = {
+  sortName: sortNameType;
+  sortOrder: sortOrderType;
+};
+
+
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
+
+  const sortedData = useMemo(() => { 
+    if (dummyData) {
+      const sorted = dummyData.sort((a, b): any => {
+        if (sortBy.sortName === 'expiryDate') {
+          if (sortBy.sortOrder === 'asc') {
+            return new Date(a[sortBy.sortName]).getTime() - new Date(b[sortBy.sortName]).getTime();
+          } else {
+            return new Date(b[sortBy.sortName]).getTime() - new Date(a[sortBy.sortName]).getTime();
+          }
+        }
+        if (sortBy.sortName === 'name') {
+          if (sortBy.sortOrder === 'asc') {
+            return a[sortBy.sortName].localeCompare(b[sortBy.sortName]);
+          } else {
+            return b[sortBy.sortName].localeCompare(a[sortBy.sortName]);
+          }
+        }
+      });
+      return sorted;
+    }
+    return []
+  }, [sortBy.sortName, sortBy.sortOrder]);
 
   const clickHandler = () => {
     setModalVisible(true);
@@ -24,7 +56,6 @@ const App = () => {
       {/* MODAL VIEW */}
       <ModalView modalVisible={modalVisible} setModalVisible={setModalVisible} />
 
-
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
@@ -32,8 +63,8 @@ const App = () => {
         keyExtractor={item => item.tempId}
         getItemCount={getItemCount}
         getItem={getItem}
-        data={dummyData}
-        ListHeaderComponent={<ListHeaderComponent />}
+        data={sortedData}
+        ListHeaderComponent={<ListHeaderComponent sortBy={sortBy} setSortBy={setSortBy} />}
         stickyHeaderIndices={[0]}
       />
       <TouchableOpacity
