@@ -26,6 +26,11 @@ interface formInputsState {
   name: string;
 }
 
+const defaultFormInputs = {
+  expiryDate: new Date(),
+  name: '',
+}
+
 const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
@@ -59,6 +64,7 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
       saveToStorage('groceryData', newGroceryData)
       setGroceryData(newGroceryData.items)
       setModalVisible(false)
+      setFormInputs(defaultFormInputs)
     });
   }
 

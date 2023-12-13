@@ -8,10 +8,9 @@
 - Add Edit button (UI only)
 - Add Add Button + Modal (UI only)
 - Add storage
+- Connect Add Modal to Storage
 
 ### TODO
-
-- Connect Add Modal to Storage
 
 - Connect Edit to Modal to Storage
 - Add Delete Button (UI & Logic)
