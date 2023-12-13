@@ -10,29 +10,63 @@ import {
   Button,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
+import { loadFromStorage, saveToStorage, GroceryItemType } from '../data/storage';
+
 
 interface IProps {
   modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
+  groceryData: GroceryItemType[];
+  setGroceryData: (data: GroceryItemType[]) => void;
 }
 
 interface formInputsState {
-  expiryDate: Date;
+  expiryDate: any;
   name: string;
 }
 
-const ModalView = ({ modalVisible, setModalVisible }: IProps) => {
+const defaultFormInputs = {
+  expiryDate: new Date(),
+  name: '',
+}
+
+const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
     expiryDate: new Date(),
     name: '',
   })
-  const [show, setShow] = useState(false);
 
   const onChangeDate = (event: any, selectedDate: any): void => setFormInputs(currState => ({
     ...currState,
     expiryDate: selectedDate,
   }))
+
+  const handleOnPress = () => {
+    loadFromStorage('groceryData').then((groceryDataObject: any) => {
+      const newId = groceryDataObject?.lastId + 1
+      const todaysDate = moment().format('YYYY-MM-DD')
+      const newGroceryData = {
+        lastId: newId,
+        items: [
+          ...groceryDataObject.items,
+          {
+            id: newId,
+            addDate: todaysDate,
+            units: 1,
+            name: formInputs.name,
+            expiryDate: moment(formInputs.expiryDate).format('YYYY-MM-DD'),
+          }
+        ]
+      }
+      
+      saveToStorage('groceryData', newGroceryData)
+      setGroceryData(newGroceryData.items)
+      setModalVisible(false)
+      setFormInputs(defaultFormInputs)
+    });
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -63,7 +97,7 @@ const ModalView = ({ modalVisible, setModalVisible }: IProps) => {
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Button title="Add" />
+            <Button title="Add" onPress={handleOnPress}/>
           </View>
         </View>
       </Modal>

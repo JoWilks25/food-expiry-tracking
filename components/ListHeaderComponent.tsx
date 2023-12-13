@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   View,
+  StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { styles } from '../styles/styles';
 import { SortByType } from '../App';
 
 type ListHeaderComponentProps = {
@@ -31,5 +31,15 @@ const ListHeaderComponent = ({sortBy, setSortBy}: ListHeaderComponentProps) => {
     </View>
   )
 }
+
+const styles: any = StyleSheet.create({
+  headerView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+})
 
 export default ListHeaderComponent;
