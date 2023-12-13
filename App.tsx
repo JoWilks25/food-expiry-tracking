@@ -113,7 +113,7 @@ const App = () => {
           storage.remove({
             key: 'groceryData',
           });
-          saveToStorage('groceryData', defaultStorageState)
+          saveNewState('groceryData', defaultStorageState)
         }}
       />
       <TouchableOpacity
