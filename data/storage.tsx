@@ -1,6 +1,19 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export interface GroceryItemType {
+  id: number;
+  name: string;
+  expiryDate: string;
+  addDate: string;
+  units: number; // Number of units
+  // quantity: number;
+  // quantityMeasure: string;
+  // price: number;
+  // priceType: string;
+  // endState: active, deleted, eaten, wasted
+}
+
 const storage = new Storage({
   // maximum capacity, default 1000 key-ids
   size: 1000,
@@ -30,6 +43,33 @@ export const saveToStorage = (key: string, data: {[key: string]: any }): void =>
     data,
     expires: null,
   });
+}
+
+export const loadFromStorage = (key: string): any => {
+  return storage.load({
+    key,
+    autoSync: true,
+    syncInBackground: true,
+    syncParams: {
+      extraFetchOptions: {
+      },
+      someFlag: true
+    }
+  })
+  // .then(ret => {
+  //   console.log(ret);
+  //   return ret;
+  // })
+  // .catch(err => {
+  //   console.info(err.message);
+  //   switch (err.name) {
+  //     // TODO
+  //     case 'NotFoundError':
+  //       break;
+  //     case 'ExpiredError':
+  //       break;
+  //   }
+  // });
 }
 
 export default storage;

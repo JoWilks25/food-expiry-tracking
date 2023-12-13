@@ -6,12 +6,12 @@ import {
   Image,
   StyleSheet,
   StatusBar,
+  Button,
 } from 'react-native';
 import Item, { getItem, getItemCount } from './components/Items';
 import ListHeaderComponent from './components/ListHeaderComponent';
 import ModalView from './components/ModalView';
-import dummyData, { GroceryItemType } from './data/dummyData';
-import storage, { saveToStorage } from './data/storage'
+import storage, { saveToStorage, GroceryItemType } from './data/storage'
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -20,7 +20,8 @@ export type SortByType = {
   sortOrder: sortOrderType;
 };
 
-const defaultStorageState = { items: [...dummyData] };
+// Always increment lastId by 1 before using for new item, so keep as 0
+const defaultStorageState = { lastId: 0, items: [] };
 
 const App = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -34,9 +35,6 @@ const App = () => {
   
   useEffect(() => {
     // Check for existing data
-    storage.remove({
-      key: 'groceryData'
-    });
     storage.load({
         key: 'groceryData',
         autoSync: true,
@@ -68,7 +66,7 @@ const App = () => {
   
   const sortedData = useMemo(() => { 
     if (groceryData) {
-      const sorted = dummyData.sort((a, b): any => {
+      const sorted = groceryData.sort((a, b): any => {
         if (sortBy.sortName === 'expiryDate') {
           if (sortBy.sortOrder === 'asc') {
             return new Date(a[sortBy.sortName]).getTime() - new Date(b[sortBy.sortName]).getTime();
@@ -87,7 +85,7 @@ const App = () => {
       return sorted;
     }
     return []
-  }, [sortBy.sortName, sortBy.sortOrder]);
+  }, [groceryData, sortBy.sortName, sortBy.sortOrder]);
 
   const clickHandler = () => {
     setModalVisible(true);
@@ -108,6 +106,15 @@ const App = () => {
         data={sortedData}
         ListHeaderComponent={<ListHeaderComponent sortBy={sortBy} setSortBy={setSortBy} />}
         stickyHeaderIndices={[0]}
+      />
+      <Button
+        title={"Reset Storage"}
+        onPress={() => {
+          storage.remove({
+            key: 'groceryData',
+          });
+          saveToStorage('groceryData', defaultStorageState)
+        }}
       />
       <TouchableOpacity
         activeOpacity={0.7}

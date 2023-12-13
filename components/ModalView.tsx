@@ -10,8 +10,8 @@ import {
   Button,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { GroceryItemType } from '../data/dummyData';
-import { saveToStorage } from '../data/storage';
+import moment from 'moment';
+import { loadFromStorage, saveToStorage, GroceryItemType } from '../data/storage';
 
 
 interface IProps {
@@ -22,7 +22,7 @@ interface IProps {
 }
 
 interface formInputsState {
-  expiryDate: Date;
+  expiryDate: any;
   name: string;
 }
 
@@ -38,18 +38,29 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
     expiryDate: selectedDate,
   }))
 
-  // const addValue = () => {
-
-  //   const newGroceryData = [
-  //     ...groceryData,
-  //     {
-  //       ...formInputs,
-        
-  //     }
-  //   ]
-  //   saveToStorage('groceryData', newGroceryData)
-  //   setGroceryData(newGroceryData)
-  // }
+  const handleOnPress = () => {
+    loadFromStorage('groceryData').then((groceryDataObject: any) => {
+      const newId = groceryDataObject?.lastId + 1
+      const todaysDate = moment().format('YYYY-MM-DD')
+      const newGroceryData = {
+        lastId: newId,
+        items: [
+          ...groceryDataObject.items,
+          {
+            id: newId,
+            addDate: todaysDate,
+            units: 1,
+            name: formInputs.name,
+            expiryDate: moment(formInputs.expiryDate).format('YYYY-MM-DD'),
+          }
+        ]
+      }
+      
+      saveToStorage('groceryData', newGroceryData)
+      setGroceryData(newGroceryData.items)
+      setModalVisible(false)
+    });
+  }
 
   return (
     <View style={styles.centeredView}>
@@ -80,7 +91,7 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Button title="Add" />
+            <Button title="Add" onPress={handleOnPress}/>
           </View>
         </View>
       </Modal>

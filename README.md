@@ -12,15 +12,22 @@
 ### TODO
 
 - Connect Add Modal to Storage
+
 - Connect Edit to Modal to Storage
 - Add Delete Button (UI & Logic)
 - Add Ate or Wasted Button (UI & Logic)
 - Add Ate & Wasted Filter (UI & Logic)
 - Add upload button for receipt pdfs (UI & Logic)
 - Add scrape items from receipt button (UI & Logic)
+- Add Notifications (hardcoded day before etc)
+- Add Ability to adjust notifications (Date and time)
+
 
 ### Architectural Questions
 
 - What should I do with Id's?
-  - Potentially add them in manually... requiring I keep a count of the next free id
-  - Decided that deleting will be a form of archiving i.e. changing state to 'deleted'
+  - when save to storage, always save as sorted by id
+  - keep separate key in storage that tracks last used id (i.e. highest id no)
+- Decided that deleting will be a form of archiving i.e. changing state to 'deleted'
+
+- Notifications
