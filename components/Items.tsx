@@ -4,7 +4,7 @@ import {
   Text,
   Button,
 } from 'react-native';
-import { GroceryItemType } from '../dummyData';
+import { GroceryItemType } from '../data/dummyData';
 import { styles } from '../styles/styles';
 
 interface ItemProps extends GroceryItemType {

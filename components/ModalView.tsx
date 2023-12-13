@@ -10,10 +10,15 @@ import {
   Button,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { GroceryItemType } from '../data/dummyData';
+import { saveToStorage } from '../data/storage';
+
 
 interface IProps {
   modalVisible: boolean;
   setModalVisible: (modalVisible: boolean) => void;
+  groceryData: GroceryItemType[];
+  setGroceryData: (data: GroceryItemType[]) => void;
 }
 
 interface formInputsState {
@@ -21,18 +26,30 @@ interface formInputsState {
   name: string;
 }
 
-const ModalView = ({ modalVisible, setModalVisible }: IProps) => {
+const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
     expiryDate: new Date(),
     name: '',
   })
-  const [show, setShow] = useState(false);
 
   const onChangeDate = (event: any, selectedDate: any): void => setFormInputs(currState => ({
     ...currState,
     expiryDate: selectedDate,
   }))
+
+  // const addValue = () => {
+
+  //   const newGroceryData = [
+  //     ...groceryData,
+  //     {
+  //       ...formInputs,
+        
+  //     }
+  //   ]
+  //   saveToStorage('groceryData', newGroceryData)
+  //   setGroceryData(newGroceryData)
+  // }
 
   return (
     <View style={styles.centeredView}>

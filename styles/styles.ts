@@ -2,10 +2,10 @@ import { StyleSheet, StatusBar } from "react-native";
 
 export const styles: any = StyleSheet.create({
   // LIST STYLES
-  container: {
-    flex: 1,
-    marginTop: StatusBar.currentHeight,
-  },
+  // container: {
+  //   flex: 1,
+  //   marginTop: StatusBar.currentHeight,
+  // },
   item: {
     backgroundColor: '#f9c2ff',
     height: 150,
@@ -21,21 +21,21 @@ export const styles: any = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
-  touchableOpacityStyle: {
-    position: 'absolute',
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 30,
-  },
-  floatingButtonStyle: {
-    resizeMode: 'contain',
-    width: 50,
-    height: 50,
-    //backgroundColor:'black'
-  },
+  // touchableOpacityStyle: {
+  //   position: 'absolute',
+  //   width: 50,
+  //   height: 50,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  //   right: 30,
+  //   bottom: 30,
+  // },
+  // floatingButtonStyle: {
+  //   resizeMode: 'contain',
+  //   width: 50,
+  //   height: 50,
+  //   //backgroundColor:'black'
+  // },
   headerView: {
     flex: 1,
     flexDirection: 'row',

@@ -8,6 +8,7 @@ export interface GroceryItemType {
   // quantityMeasure: string;
   // price: number;
   // priceType: string;
+  // endState: active, deleted, eaten, wasted
 }
 
 const dummyData: GroceryItemType[] = [
@@ -25,34 +26,34 @@ const dummyData: GroceryItemType[] = [
     addDate: '2023-11-26',
     units: 1,
   },
-  {
-    id: 2,
-    name: 'JACKSONS JOY FARMHOUSE WHOLEMEAL',
-    expiryDate: '2023-11-26',
-    addDate: '2023-11-26',
-    units: 1,
-  },
-  {
-    id: 4,
-    name: 'ARLA LACTOFREE SEMI SKIMMED MILK DRINK',
-    expiryDate: '2023-11-30',
-    addDate: '2023-11-30',
-    units: 1,
-  },
-  {
-    id: 3,
-    name: 'FINNEBROGUE NAKED 12 GOOD LITTLE COMPANY CHIPOLATAS',
-    expiryDate: '2023-11-28',
-    addDate: '2023-11-28',
-    units: 1,
-  },
-  {
-    id: 5,
-    name: "DINO'S FAMOUS SWEET STACKER PICKLES 530g 1/12.50",
-    expiryDate: '2023-11-30',
-    addDate: '2023-11-30',
-    units: 1,
-  },
+  // {
+  //   id: 2,
+  //   name: 'JACKSONS JOY FARMHOUSE WHOLEMEAL',
+  //   expiryDate: '2023-11-26',
+  //   addDate: '2023-11-26',
+  //   units: 1,
+  // },
+  // {
+  //   id: 4,
+  //   name: 'ARLA LACTOFREE SEMI SKIMMED MILK DRINK',
+  //   expiryDate: '2023-11-30',
+  //   addDate: '2023-11-30',
+  //   units: 1,
+  // },
+  // {
+  //   id: 3,
+  //   name: 'FINNEBROGUE NAKED 12 GOOD LITTLE COMPANY CHIPOLATAS',
+  //   expiryDate: '2023-11-28',
+  //   addDate: '2023-11-28',
+  //   units: 1,
+  // },
+  // {
+  //   id: 5,
+  //   name: "DINO'S FAMOUS SWEET STACKER PICKLES 530g 1/12.50",
+  //   expiryDate: '2023-11-30',
+  //   addDate: '2023-11-30',
+  //   units: 1,
+  // },
 ]
 export default dummyData
 
