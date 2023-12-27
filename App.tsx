@@ -104,7 +104,7 @@ const App = () => {
       return sorted;
     }
     return []
-  }, [groceryData, sortBy.sortName, sortBy.sortOrder]);
+  }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
 
   // Functions for Modal
   const modalAction = (event: any, item?: GroceryItemType) => {

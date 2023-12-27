@@ -23,19 +23,16 @@ interface formInputsState {
   name: string | undefined;
 }
 
-const defaultFormInputs = [ItemState.ACTIVE]
-
 const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
-  const [toggledStates, setToggledStates] = useState(defaultFormInputs)
 
   const onValueChange = (itemState: ItemState): void => {
     // if itemstate already in array remove, if not in array add
-    const  newToggledStates = toggledStates.includes(itemState)
-      ? toggledStates.filter((state) => state !== itemState)
-      : [...toggledStates, itemState]
-    setToggledStates(newToggledStates)
+    const  selectedItemStates = filterModal.itemStates.includes(itemState)
+      ? filterModal.itemStates.filter((state) => state !== itemState)
+      : [...filterModal.itemStates, itemState]
+    setFilterModal({ ...filterModal, itemStates: selectedItemStates })
   }
-  console.log('toggledStates', toggledStates)
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -58,7 +55,7 @@ const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
                 <View style={styles.checkbox}>
                   <CheckBox
                     disabled={false}
-                    value={toggledStates.includes(item)}
+                    value={filterModal.itemStates.includes(item)}
                     onValueChange={() => onValueChange(item)}
                     boxType="circle"
                     animationDuration={0.1}
