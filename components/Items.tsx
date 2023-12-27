@@ -57,13 +57,11 @@ const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
       {
         item?.itemState !== ItemState.ACTIVE ?
         (
-          <FAIcon.Button
-            name="activate"
-            backgroundColor={"orange"}
+          <Button
+            title="Reactivate"
+            color="green"
             onPress={() => handleStateChange(item?.id, ItemState.ACTIVE)}
-          >
-            Reactivate
-          </FAIcon.Button>
+          />
         )
         : ''
       }
