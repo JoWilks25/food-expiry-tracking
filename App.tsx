@@ -7,11 +7,13 @@ import {
   StyleSheet,
   StatusBar,
   Button,
+  Alert,
 } from 'react-native';
+import moment from 'moment';
 import Item, { getItem, getItemCount } from './components/Items';
 import ListHeaderComponent from './components/ListHeaderComponent';
 import ModalView from './components/ModalView';
-import storage, { saveToStorage, GroceryItemType } from './data/storage'
+import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from './data/storage'
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -33,6 +35,7 @@ const App = () => {
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
 
+  // Manage initial loading
   const saveNewState = (key: string, data: {[key: string]: any }): void => {
     saveToStorage(key, data)
     setGroceryData(data.items)
@@ -51,8 +54,8 @@ const App = () => {
           someFlag: true
         }
       })
-      .then(ret => {
-        console.log('load:', ret);
+      .then(groceryData => {
+        setGroceryData(groceryData.items)
       })
       .catch(err => {
         console.info(err.message);
@@ -69,44 +72,78 @@ const App = () => {
 
   }, [])
 
-  
+  // Functions for Header Components
   const sortedData = useMemo(() => { 
     if (groceryData) {
-      const sorted = groceryData.sort((a, b): any => {
-        if (sortBy.sortName === 'expiryDate') {
-          if (sortBy.sortOrder === 'asc') {
-            return new Date(a[sortBy.sortName]).getTime() - new Date(b[sortBy.sortName]).getTime();
-          } else {
-            return new Date(b[sortBy.sortName]).getTime() - new Date(a[sortBy.sortName]).getTime();
+      const sorted = groceryData
+        .filter((item)=> item.itemState === ItemState.ACTIVE)
+        .sort((a, b): any => {
+          if (sortBy.sortName === 'expiryDate') {
+            if (sortBy.sortOrder === 'asc') {
+              return new Date(a[sortBy.sortName]).getTime() - new Date(b[sortBy.sortName]).getTime();
+            } else {
+              return new Date(b[sortBy.sortName]).getTime() - new Date(a[sortBy.sortName]).getTime();
+            }
           }
-        }
-        if (sortBy.sortName === 'name') {
-          if (sortBy.sortOrder === 'asc') {
-            return a[sortBy.sortName].localeCompare(b[sortBy.sortName]);
-          } else {
-            return b[sortBy.sortName].localeCompare(a[sortBy.sortName]);
+          if (sortBy.sortName === 'name') {
+            if (sortBy.sortOrder === 'asc') {
+              return a[sortBy.sortName].localeCompare(b[sortBy.sortName]);
+            } else {
+              return b[sortBy.sortName].localeCompare(a[sortBy.sortName]);
+            }
           }
-        }
-      });
+        })
       return sorted;
     }
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder]);
 
+  // Functions for Modal
   const modalAction = (event: any, item?: GroceryItemType) => {
-    // If a specific item has been provided then is edit mode
     setModalData({ ...modalData, isVisible: true, })
   }; 
+
+  // Functions for Item Actions
+  const handleDelete = (itemId: number) => {
+    if (!itemId) { Alert.alert("Unable to delete")}
+    if (itemId) {
+      loadFromStorage('groceryData')
+        .then((groceryDataObject: any) => {
+          let newGroceryData = {...groceryDataObject}
+          const todaysDate = moment().format('YYYY-MM-DD');
+          const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === itemId)
+          console.log('foundIndex', foundIndex)
+          if (foundIndex < 0) {
+            Alert.alert("Unable to find item")
+            return
+          }
+          Object.assign(groceryDataObject.items[foundIndex], {
+            lastUpdateDate: todaysDate,
+            itemState: ItemState.DELETED,
+          })
+          saveToStorage('groceryData', newGroceryData)
+          setGroceryData(newGroceryData.items)
+        })
+        .catch((error: any) => {
+          console.log('error', error)
+        });
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
       {/* MODAL VIEW */}
-      <ModalView modalData={modalData} setModalData={setModalData} groceryData={groceryData} setGroceryData={setGroceryData} />
+      <ModalView
+        modalData={modalData}
+        setModalData={setModalData}
+        groceryData={groceryData}
+        setGroceryData={setGroceryData}
+      />
 
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
-        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} />}
+        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} handleDelete={handleDelete}/>}
         keyExtractor={item => item.id}
         getItemCount={getItemCount}
         getItem={getItem}
@@ -165,7 +202,6 @@ const styles: any = StyleSheet.create({
     resizeMode: 'contain',
     width: 50,
     height: 50,
-    //backgroundColor:'black'
   },
 })
 

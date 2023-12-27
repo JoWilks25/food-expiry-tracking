@@ -8,9 +8,9 @@ import {
   TextInput,
   Button,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import { loadFromStorage, saveToStorage, GroceryItemType } from '../data/storage';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../data/storage';
 import { modalDataType } from '../App';
 
 
@@ -59,39 +59,42 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!")
     }
-    loadFromStorage('groceryData').then((groceryDataObject: any) => {
-      let newGroceryData = {...groceryDataObject}
-      const todaysDate = moment().format('YYYY-MM-DD');
-      const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
-      if (modalData?.selectedId) {
-        const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
-        Object.assign(groceryDataObject.items[foundIndex], {
-          name: formInputs.name,
-          expiryDate: expiryDate,
-          lastUpdateDate: todaysDate,
-        })
-      } else {
-        const newId = groceryDataObject?.lastId + 1;
-        newGroceryData = {
-          lastId: newId,
-          items: [
-            ...groceryDataObject.items,
-            {
-              id: newId,
-              addDate: todaysDate,
-              units: 1,
-              name: formInputs.name,
-              expiryDate: expiryDate,
-              lastUpdateDate: null,
-            }
-          ]
+    loadFromStorage('groceryData')
+      .then((groceryDataObject: any) => {
+        let newGroceryData = {...groceryDataObject}
+        const todaysDate = moment().format('YYYY-MM-DD');
+        const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
+        if (modalData?.selectedId) {
+          const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
+          Object.assign(groceryDataObject.items[foundIndex], {
+            name: formInputs.name,
+            expiryDate: expiryDate,
+            lastUpdateDate: todaysDate,
+          })
+        } else {
+          const newId = groceryDataObject?.lastId + 1;
+          newGroceryData = {
+            lastId: newId,
+            items: [
+              ...groceryDataObject.items,
+              {
+                id: newId,
+                addDate: todaysDate,
+                units: 1,
+                name: formInputs.name,
+                expiryDate: expiryDate,
+                lastUpdateDate: null,
+                itemState: ItemState.ACTIVE,
+              }
+            ]
+          }
         }
-      }
-      saveToStorage('groceryData', newGroceryData)
-      setGroceryData(newGroceryData.items)
-      setModalData({ isVisible: false, selectedId: null, })
-      setFormInputs(defaultFormInputs)
-    }).catch((error: any) => {
+        saveToStorage('groceryData', newGroceryData)
+        setGroceryData(newGroceryData.items)
+        setModalData({ isVisible: false, selectedId: null, })
+        setFormInputs(defaultFormInputs)
+      })
+      .catch((error: any) => {
       console.log('error', error)
     });
   }

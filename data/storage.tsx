@@ -1,6 +1,14 @@
 import Storage from 'react-native-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+export enum ItemState {
+  ACTIVE = 'ACTIVE',
+  DELETED = 'DELETED',
+  EATEN = 'EATEN',
+  WASTED = 'WASTED',
+  EXPIRED_EARLY = 'EXPIRED_EARLY',
+}
+
 export interface GroceryItemType {
   id: number;
   name: string;
@@ -8,11 +16,11 @@ export interface GroceryItemType {
   addDate: string;
   lastUpdateDate: string | null; 
   units: number; // Number of units
+  itemState: ItemState;
   // quantity: number;
   // quantityMeasure: string;
   // price: number;
   // priceType: string;
-  // endState: active, deleted, eaten, wasted
 }
 
 const storage = new Storage({
