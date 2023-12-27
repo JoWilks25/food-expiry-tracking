@@ -4,7 +4,6 @@ import {
   Text,
   Modal,
   Alert,
-  Pressable,
   StyleSheet,
   TextInput,
   Button,
@@ -42,7 +41,6 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
   useEffect(() => {
     if (modalData.selectedId) {
       const selectedgroceryDatum = groceryData?.find((groceryDatum) => groceryDatum.id === modalData.selectedId)
-      console.log('selectedgroceryDatum', selectedgroceryDatum)
       setFormInputs({
         expiryDate: new Date(selectedgroceryDatum?.expiryDate),
         name: selectedgroceryDatum?.name,
@@ -61,16 +59,17 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!")
     }
-    console.log('HIT')
     loadFromStorage('groceryData').then((groceryDataObject: any) => {
       let newGroceryData = {...groceryDataObject}
       const todaysDate = moment().format('YYYY-MM-DD');
       const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
       if (modalData?.selectedId) {
         const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
-        groceryDataObject.items[foundIndex].name = formInputs.name;
-        groceryDataObject.items[foundIndex].expiryDate = expiryDate;
-        groceryDataObject.items[foundIndex].lastUpdateDate = todaysDate;
+        Object.assign(groceryDataObject.items[foundIndex], {
+          name: formInputs.name,
+          expiryDate: expiryDate,
+          lastUpdateDate: todaysDate,
+        })
       } else {
         const newId = groceryDataObject?.lastId + 1;
         newGroceryData = {
@@ -88,7 +87,6 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
           ]
         }
       }
-      console.log('newGroceryData', newGroceryData)
       saveToStorage('groceryData', newGroceryData)
       setGroceryData(newGroceryData.items)
       setModalData({ isVisible: false, selectedId: null, })

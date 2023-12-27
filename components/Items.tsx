@@ -13,18 +13,9 @@ interface ItemProps {
   modalData: modalDataType;
   setModalData: (modalData: modalDataType) => void;
 }
-export const getItem = (data: GroceryItemType, index: number): ItemProps => {
-  return {
-    tempId: index,
-    ...data[index]
-  }
-};
+export const getItem = (data: GroceryItemType, index: number): ItemProps => data[index];
 
-export const getItemCount = (data: ItemProps): number => {
-  const count = data.length;
-  console.log('Count:', count)
-  return count;
-}
+export const getItemCount = (data: ItemProps): number => data.length;
 
 const Item = ({ item, modalData, setModalData }: ItemProps) => (
   <View style={styles.item}>
