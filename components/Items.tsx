@@ -20,24 +20,28 @@ export const getItem = (data: GroceryItemType, index: number): ItemProps => data
 
 export const getItemCount = (data: ItemProps): number => data.length;
 
-const Item = ({ item, modalData, setModalData, handleStateChange }: ItemProps) => (
+
+const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
   <View style={styles.column}>
     <View style={styles.row}>
         <View style={styles.leftColumn}>
           <Text style={styles.date}>{item?.expiryDate}</Text>
           <Text style={styles.name}>{item?.name}</Text>
+          <Text style={styles.name}>{item?.itemState !== ItemState.ACTIVE ? item?.itemState : ''}</Text>
         </View>
         <View style={styles.rightColumn}>
           <FAIcon
             name="edit"
-            color="#3B67CE"
+            color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "#3B67CE"}
             size={25}
+            disabled={item?.itemState !== ItemState.ACTIVE}
             onPress={() => setModalData({ isVisible: true, selectedId: item?.id })}
           />
           <EntypoIcon
             name="circle-with-cross"
-            color="red"
+            color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "red"}
             size={25}
+            disabled={item?.itemState !== ItemState.ACTIVE}
             onPress={() => handleStateChange(item?.id, ItemState.DELETED)}
           />
         </View>
@@ -45,14 +49,28 @@ const Item = ({ item, modalData, setModalData, handleStateChange }: ItemProps) =
     <View style={styles.row}>
       <FAIcon.Button
         name="cookie-bite"
-        backgroundColor="green"
+        backgroundColor={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "green"}
          onPress={() => handleStateChange(item?.id, ItemState.EATEN)}
       >
         Eaten
       </FAIcon.Button>
+      {
+        item?.itemState !== ItemState.ACTIVE ?
+        (
+          <FAIcon.Button
+            name="activate"
+            backgroundColor={"orange"}
+            onPress={() => handleStateChange(item?.id, ItemState.ACTIVE)}
+          >
+            Reactivate
+          </FAIcon.Button>
+        )
+        : ''
+      }
       <FAIcon.Button
         name="trash"
-        backgroundColor="#964B00"
+        disabled={item?.itemState !== ItemState.ACTIVE}
+        backgroundColor={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "#964B00"}
          onPress={() => handleStateChange(item?.id, ItemState.WASTED)}
       >
         Wasted

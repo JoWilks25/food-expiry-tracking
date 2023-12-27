@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -9,18 +9,13 @@ import {
   Button,
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
-import { filterModalType, modalDataType } from '../App';
+import { filterModalType } from '../App';
 import { ItemState } from '../data/storage';
 
 
 interface IProps {
   filterModal: filterModalType;
   setFilterModal: (filterModal: filterModalType) => void;
-}
-
-interface formInputsState {
-  expiryDate: any;
-  name: string | undefined;
 }
 
 const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
@@ -52,7 +47,7 @@ const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
           {
             [ItemState.ACTIVE, ItemState.DELETED, ItemState.EATEN, ItemState.WASTED]?.map((item) => {
               return (
-                <View style={styles.checkbox}>
+                <View style={styles.checkbox} key={item}>
                   <CheckBox
                     disabled={false}
                     value={filterModal.itemStates.includes(item)}

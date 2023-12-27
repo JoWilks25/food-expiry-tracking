@@ -159,7 +159,6 @@ const App = () => {
         renderItem={({ item }) => 
           <Item
             setModalData={setModalData}
-            modalData={modalData}
             item={item}
             handleStateChange={handleStateChange}
             setFilterModal={setFilterModal}
