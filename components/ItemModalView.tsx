@@ -31,7 +31,7 @@ const defaultFormInputs = {
   name: '',
 }
 
-const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
+const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
     expiryDate: new Date(),
@@ -55,7 +55,7 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
     expiryDate: selectedDate,
   }))
 
-  const handleOnPress = () => {
+  const handleEditAdd = () => {
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!")
     }
@@ -132,7 +132,7 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleOnPress}/>
+            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
           </View>
         </View>
       </Modal>
@@ -193,4 +193,4 @@ export const styles: any = StyleSheet.create({
   },
 });
 
-export default ModalView;
+export default ItemModalView;
