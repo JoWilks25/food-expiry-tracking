@@ -29,7 +29,7 @@ const Item = ({ item, modalData, setModalData, handleDelete }: ItemProps) => (
       <View style={styles.rightColumn}>
         <FAIcon
           name="edit"
-          color="#4A88DA"
+          color="#3B67CE"
           size={25}
           onPress={() => setModalData({ isVisible: true, selectedId: item?.id })}
         />
