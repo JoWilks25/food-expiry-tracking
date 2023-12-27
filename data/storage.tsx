@@ -6,6 +6,7 @@ export interface GroceryItemType {
   name: string;
   expiryDate: string;
   addDate: string;
+  lastUpdateDate: string | null; 
   units: number; // Number of units
   // quantity: number;
   // quantityMeasure: string;

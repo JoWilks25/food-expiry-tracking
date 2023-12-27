@@ -14,7 +14,7 @@ export const styles: any = StyleSheet.create({
     marginHorizontal: 16,
     padding: 20,
   },
-  title: {
+  name: {
     fontSize: 20,
   },
   date: {

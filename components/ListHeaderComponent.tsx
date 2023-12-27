@@ -23,7 +23,7 @@ const ListHeaderComponent = ({sortBy, setSortBy}: ListHeaderComponentProps) => {
       </Icon.Button>
       <Icon.Button
         name={sortBy.sortName === 'name' && sortBy.sortOrder === 'asc' ? 'sort-alpha-asc' : 'sort-alpha-desc'}
-        backgroundColor={sortBy.sortName === 'name' ? '#3b5998' : "lightgrey"}
+        backgroundColor={sortBy.sortName === 'name' ? '#3b5998' : 'lightgrey'}
         onPress={() => setSortBy({ sortName: 'name', sortOrder: sortBy.sortOrder === 'asc' ? 'desc' : 'asc' })}
       >
         Alphabetical

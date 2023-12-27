@@ -4,27 +4,24 @@ import {
   Text,
   Button,
 } from 'react-native';
-import { GroceryItemType } from '../data/dummyData';
+import { GroceryItemType } from '../data/storage';
 import { styles } from '../styles/styles';
+import { modalDataType } from '../App';
 
-interface ItemProps extends GroceryItemType {
-  tempId: number;
+interface ItemProps {
+  item: GroceryItemType
+  modalData: modalDataType;
+  setModalData: (modalData: modalDataType) => void;
 }
-export const getItem = (data: GroceryItemType, index: number): ItemProps => {
-  return {
-    tempId: index,
-    ...data[index]
-  }
-};
+export const getItem = (data: GroceryItemType, index: number): ItemProps => data[index];
 
 export const getItemCount = (data: ItemProps): number => data.length;
 
-
-const Item = ({ title, date }: ItemProps) => (
+const Item = ({ item, modalData, setModalData }: ItemProps) => (
   <View style={styles.item}>
-    <Text style={styles.date}>{date}</Text>
-    <Text style={styles.title}>{title}</Text>
-    <Button title="Edit" onPress={() => console.log(`Clicked ${title}`)} />
+    <Text style={styles.date}>{item?.expiryDate}</Text>
+    <Text style={styles.name}>{item?.name}</Text>
+    <Button title="Edit" onPress={() => setModalData({ isVisible: true, selectedId: item?.id })} />
   </View>
 );
 
