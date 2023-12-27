@@ -55,7 +55,7 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
     expiryDate: selectedDate,
   }))
 
-  const handleOnPress = () => {
+  const handleEditAdd = () => {
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!")
     }
@@ -132,7 +132,7 @@ const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IPr
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleOnPress}/>
+            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
           </View>
         </View>
       </Modal>

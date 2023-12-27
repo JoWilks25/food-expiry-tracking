@@ -104,7 +104,7 @@ const App = () => {
   }; 
 
   // Functions for Item Actions
-  const handleDelete = (itemId: number) => {
+  const handleStateChange = (itemId: number, newItemState: ItemState): void => {
     if (!itemId) { Alert.alert("Unable to delete")}
     if (itemId) {
       loadFromStorage('groceryData')
@@ -119,7 +119,7 @@ const App = () => {
           }
           Object.assign(groceryDataObject.items[foundIndex], {
             lastUpdateDate: todaysDate,
-            itemState: ItemState.DELETED,
+            itemState: newItemState,
           })
           saveToStorage('groceryData', newGroceryData)
           setGroceryData(newGroceryData.items)
@@ -143,7 +143,7 @@ const App = () => {
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
-        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} handleDelete={handleDelete}/>}
+        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} handleStateChange={handleStateChange}/>}
         keyExtractor={item => item.id}
         getItemCount={getItemCount}
         getItem={getItem}
