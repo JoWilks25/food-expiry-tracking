@@ -5,7 +5,8 @@ import {
   Button,
   StyleSheet,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { GroceryItemType } from '../data/storage';
 import { modalDataType } from '../App';
 
@@ -13,6 +14,7 @@ interface ItemProps {
   item: GroceryItemType
   modalData: modalDataType;
   setModalData: (modalData: modalDataType) => void;
+  handleDelete: (itemId: number) => void;
 }
 export const getItem = (data: GroceryItemType, index: number): ItemProps => data[index];
 
@@ -25,13 +27,15 @@ const Item = ({ item, modalData, setModalData, handleDelete }: ItemProps) => (
         <Text style={styles.name}>{item?.name}</Text>
       </View>
       <View style={styles.rightColumn}>
-        <Icon
+        <FAIcon
           name="edit"
+          color="#4A88DA"
           size={25}
           onPress={() => setModalData({ isVisible: true, selectedId: item?.id })}
         />
-        <Icon
-          name="trash"
+        <EntypoIcon
+          name="circle-with-cross"
+          color="red"
           size={25}
           onPress={() => handleDelete(item?.id)}
         />
@@ -65,7 +69,6 @@ const styles: any = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    // marginTop: -50,
   },
   name: {
     fontSize: 20,

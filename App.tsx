@@ -32,7 +32,8 @@ const App = () => {
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
-  console.log('groceryData', groceryData)
+
+  // Manage initial loading
   const saveNewState = (key: string, data: {[key: string]: any }): void => {
     saveToStorage(key, data)
     setGroceryData(data.items)
@@ -69,7 +70,7 @@ const App = () => {
 
   }, [])
 
-  
+  // Functions for Header Components
   const sortedData = useMemo(() => { 
     if (groceryData) {
       const sorted = groceryData.sort((a, b): any => {
@@ -93,10 +94,15 @@ const App = () => {
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder]);
 
+  // Functions for Modal
   const modalAction = (event: any, item?: GroceryItemType) => {
-    // If a specific item has been provided then is edit mode
     setModalData({ ...modalData, isVisible: true, })
   }; 
+
+  // Functions for Item Actions
+  const handleDelete = (itemId: number) => {
+    
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -165,7 +171,6 @@ const styles: any = StyleSheet.create({
     resizeMode: 'contain',
     width: 50,
     height: 50,
-    //backgroundColor:'black'
   },
 })
 
