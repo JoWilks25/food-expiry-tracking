@@ -32,7 +32,7 @@ const App = () => {
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
-
+  console.log('groceryData', groceryData)
   const saveNewState = (key: string, data: {[key: string]: any }): void => {
     saveToStorage(key, data)
     setGroceryData(data.items)
@@ -51,8 +51,8 @@ const App = () => {
           someFlag: true
         }
       })
-      .then(ret => {
-        console.log('load:', ret);
+      .then(groceryData => {
+        setGroceryData(groceryData.items)
       })
       .catch(err => {
         console.info(err.message);
