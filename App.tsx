@@ -19,18 +19,24 @@ export type SortByType = {
   sortName: sortNameType;
   sortOrder: sortOrderType;
 };
+export type modalDataType = {
+  isVisible: boolean;
+  selectedId: number | null 
+}
 
 // Always increment lastId by 1 before using for new item, so keep as 0
 const defaultStorageState = { lastId: 0, items: [] };
+const defaultModalData = { isVisible: false, selectedId: null };
 
 const App = () => {
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>()
-
+  console.log("groceryData:", groceryData)
   const saveNewState = (key: string, data: {[key: string]: any }): void => {
     saveToStorage(key, data)
     setGroceryData(data.items)
+    setModalData(defaultModalData)
   }
   
   useEffect(() => {
@@ -87,20 +93,21 @@ const App = () => {
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder]);
 
-  const clickHandler = () => {
-    setModalVisible(true);
-  };
+  const modalAction = (event: any, item?: GroceryItemType) => {
+    // If a specific item has been provided then is edit mode
+    setModalData({ ...modalData, isVisible: true, })
+  }; 
 
   return (
     <SafeAreaView style={styles.container}>
       {/* MODAL VIEW */}
-      <ModalView modalVisible={modalVisible} setModalVisible={setModalVisible} groceryData={groceryData} setGroceryData={setGroceryData} />
+      <ModalView modalData={modalData} setModalData={setModalData} groceryData={groceryData} setGroceryData={setGroceryData} />
 
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
-        renderItem={({ item }) => <Item title={item.name} date={item.expiryDate} />}
-        keyExtractor={item => item.tempId}
+        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} />}
+        keyExtractor={item => item.id}
         getItemCount={getItemCount}
         getItem={getItem}
         data={sortedData}
@@ -112,13 +119,14 @@ const App = () => {
         onPress={() => {
           storage.remove({
             key: 'groceryData',
+          }).then(() => {
+            saveNewState('groceryData', defaultStorageState)
           });
-          saveNewState('groceryData', defaultStorageState)
         }}
       />
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={clickHandler}
+        onPress={modalAction}
         style={styles.touchableOpacityStyle}>
         <Image
           // FAB using TouchableOpacity with an image

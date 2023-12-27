@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,18 +12,19 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import { loadFromStorage, saveToStorage, GroceryItemType } from '../data/storage';
+import { modalDataType } from '../App';
 
 
 interface IProps {
-  modalVisible: boolean;
-  setModalVisible: (modalVisible: boolean) => void;
-  groceryData: GroceryItemType[];
+  modalData: modalDataType;
+  setModalData: (modalData: modalDataType) => void;
+  groceryData: GroceryItemType[] | undefined;
   setGroceryData: (data: GroceryItemType[]) => void;
 }
 
 interface formInputsState {
   expiryDate: any;
-  name: string;
+  name: string | undefined;
 }
 
 const defaultFormInputs = {
@@ -31,12 +32,25 @@ const defaultFormInputs = {
   name: '',
 }
 
-const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData }: IProps) => {
+const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
     expiryDate: new Date(),
     name: '',
   })
+
+  useEffect(() => {
+    if (modalData.selectedId) {
+      const selectedgroceryDatum = groceryData?.find((groceryDatum) => groceryDatum.id === modalData.selectedId)
+      console.log('selectedgroceryDatum', selectedgroceryDatum)
+      setFormInputs({
+        expiryDate: new Date(selectedgroceryDatum?.expiryDate),
+        name: selectedgroceryDatum?.name,
+      })
+    }
+    // Clear formInputs to default when modal closed
+    return () => setFormInputs(defaultFormInputs);
+  }, [modalData?.selectedId])
 
   const onChangeDate = (event: any, selectedDate: any): void => setFormInputs(currState => ({
     ...currState,
@@ -44,27 +58,43 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
   }))
 
   const handleOnPress = () => {
+    if (!formInputs.name) {
+      return Alert.alert("Please enter a name!")
+    }
+    console.log('HIT')
     loadFromStorage('groceryData').then((groceryDataObject: any) => {
-      const newId = groceryDataObject?.lastId + 1
-      const todaysDate = moment().format('YYYY-MM-DD')
-      const newGroceryData = {
-        lastId: newId,
-        items: [
-          ...groceryDataObject.items,
-          {
-            id: newId,
-            addDate: todaysDate,
-            units: 1,
-            name: formInputs.name,
-            expiryDate: moment(formInputs.expiryDate).format('YYYY-MM-DD'),
-          }
-        ]
+      let newGroceryData = {...groceryDataObject}
+      const todaysDate = moment().format('YYYY-MM-DD');
+      const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
+      if (modalData?.selectedId) {
+        const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
+        groceryDataObject.items[foundIndex].name = formInputs.name;
+        groceryDataObject.items[foundIndex].expiryDate = expiryDate;
+        groceryDataObject.items[foundIndex].lastUpdateDate = todaysDate;
+      } else {
+        const newId = groceryDataObject?.lastId + 1;
+        newGroceryData = {
+          lastId: newId,
+          items: [
+            ...groceryDataObject.items,
+            {
+              id: newId,
+              addDate: todaysDate,
+              units: 1,
+              name: formInputs.name,
+              expiryDate: expiryDate,
+              lastUpdateDate: null,
+            }
+          ]
+        }
       }
-      
+      console.log('newGroceryData', newGroceryData)
       saveToStorage('groceryData', newGroceryData)
       setGroceryData(newGroceryData.items)
-      setModalVisible(false)
+      setModalData({ isVisible: false, selectedId: null, })
       setFormInputs(defaultFormInputs)
+    }).catch((error: any) => {
+      console.log('error', error)
     });
   }
 
@@ -73,14 +103,18 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={modalData.isVisible}
         onRequestClose={() => {
           Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
+          setModalData({ ...modalData, isVisible: !modalData.isVisible, })
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Button onPress={() => setModalVisible(!modalVisible)} title="X" />
+            <Button onPress={() => {
+                setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
+                setFormInputs(defaultFormInputs);
+              }}
+              title="X" />
             <Text style={styles.modalText}>Name</Text>
             <TextInput
               style={styles.input}
@@ -97,7 +131,7 @@ const ModalView = ({ modalVisible, setModalVisible, groceryData, setGroceryData 
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Button title="Add" onPress={handleOnPress}/>
+            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleOnPress}/>
           </View>
         </View>
       </Modal>

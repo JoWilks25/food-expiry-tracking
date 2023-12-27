@@ -10,9 +10,12 @@
 - Add storage
 - Connect Add Modal to Storage
 
+## IN PROGRESS
+- Connect Edit to Modal to Storage
+
+
 ### TODO
 
-- Connect Edit to Modal to Storage
 - Add Delete Button (UI & Logic)
 - Add Ate or Wasted Button (UI & Logic)
 - Add Ate & Wasted Filter (UI & Logic)
