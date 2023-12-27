@@ -31,7 +31,7 @@ const defaultFormInputs = {
   name: '',
 }
 
-const ModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
+const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
 
   const [formInputs, setFormInputs] = useState<formInputsState>({
     expiryDate: new Date(),
@@ -193,4 +193,4 @@ export const styles: any = StyleSheet.create({
   },
 });
 
-export default ModalView;
+export default ItemModalView;

@@ -4,14 +4,17 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { SortByType } from '../App';
+import { SortByType, filterModalType } from '../App';
+import { ItemState } from '../data/storage';
 
 type ListHeaderComponentProps = {
   sortBy: SortByType;
   setSortBy: React.Dispatch<React.SetStateAction<SortByType>>;
+  filterModal: filterModalType;
+  setFilterModal: (filterModal: filterModalType) => void;
 };
 
-const ListHeaderComponent = ({sortBy, setSortBy}: ListHeaderComponentProps) => {
+const ListHeaderComponent = ({sortBy, setSortBy, filterModal, setFilterModal}: ListHeaderComponentProps) => {
   return (
     <View style={styles.headerView}>
       <Icon.Button
@@ -27,6 +30,13 @@ const ListHeaderComponent = ({sortBy, setSortBy}: ListHeaderComponentProps) => {
         onPress={() => setSortBy({ sortName: 'name', sortOrder: sortBy.sortOrder === 'asc' ? 'desc' : 'asc' })}
       >
         Alphabetical
+      </Icon.Button>
+      <Icon.Button
+        name="filter"
+        backgroundColor="#3b5998"
+        onPress={() => setFilterModal({ ...filterModal, isVisible: true })}
+      >
+        Filters
       </Icon.Button>
     </View>
   )

@@ -1,0 +1,114 @@
+import React, { Fragment, useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  Modal,
+  Alert,
+  StyleSheet,
+  TextInput,
+  Button,
+} from 'react-native';
+import CheckBox from '@react-native-community/checkbox';
+import { filterModalType, modalDataType } from '../App';
+import { ItemState } from '../data/storage';
+
+
+interface IProps {
+  filterModal: filterModalType;
+  setFilterModal: (filterModal: filterModalType) => void;
+}
+
+interface formInputsState {
+  expiryDate: any;
+  name: string | undefined;
+}
+
+const defaultFormInputs = [ItemState.ACTIVE]
+
+const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
+  const [toggledStates, setToggledStates] = useState(defaultFormInputs)
+
+  const onValueChange = (itemState: ItemState): void => {
+    // if itemstate already in array remove, if not in array add
+    const  newToggledStates = toggledStates.includes(itemState)
+      ? toggledStates.filter((state) => state !== itemState)
+      : [...toggledStates, itemState]
+    setToggledStates(newToggledStates)
+  }
+  console.log('toggledStates', toggledStates)
+  return (
+    <View style={styles.centeredView}>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={filterModal.isVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setFilterModal({ ...filterModal, isVisible: !filterModal.isVisible, })
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+          <Button onPress={() => {
+            setFilterModal({ ...filterModal, isVisible: !filterModal.isVisible, });
+              }}
+            title="X" />
+          {
+            [ItemState.ACTIVE, ItemState.DELETED, ItemState.EATEN, ItemState.WASTED]?.map((item) => {
+              return (
+                <View style={styles.checkbox}>
+                  <CheckBox
+                    disabled={false}
+                    value={toggledStates.includes(item)}
+                    onValueChange={() => onValueChange(item)}
+                    boxType="circle"
+                    animationDuration={0.1}
+                    onAnimationType="fade"
+                  />
+                  <Text style={styles.checkboxText}>{item}</Text>
+                </View>
+                  )
+                })
+              }
+          </View>
+        </View>
+      </Modal>
+    </View>
+  )
+}
+
+
+export const styles: any = StyleSheet.create({
+  // MODAL STYLES
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  checkbox: {
+    flexDirection: 'row',
+    paddingBottom: 15,
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+  },
+  checkboxText: {
+    paddingLeft: 7.5,
+  }
+});
+
+export default FilterModalView;

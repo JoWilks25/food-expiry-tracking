@@ -12,8 +12,9 @@ import {
 import moment from 'moment';
 import Item, { getItem, getItemCount } from './components/Items';
 import ListHeaderComponent from './components/ListHeaderComponent';
-import ModalView from './components/ModalView';
+import ItemModalView from './components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from './data/storage'
+import FilterModalView from './components/FilterModalView';
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -25,15 +26,22 @@ export type modalDataType = {
   isVisible: boolean;
   selectedId: number | null 
 }
+export type filterModalType = {
+  isVisible: boolean;
+  itemStates: ItemState[];
+}
+
 
 // Always increment lastId by 1 before using for new item, so keep as 0
 const defaultStorageState = { lastId: 0, items: [] };
 const defaultModalData = { isVisible: false, selectedId: null };
+const defaultFilterData = { isVisible: false, itemStates: [ItemState.ACTIVE] };
 
 const App = () => {
-  const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
-  const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
+  const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
+  const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
+  const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
 
   // Manage initial loading
   const saveNewState = (key: string, data: {[key: string]: any }): void => {
@@ -76,7 +84,7 @@ const App = () => {
   const sortedData = useMemo(() => { 
     if (groceryData) {
       const sorted = groceryData
-        .filter((item)=> item.itemState === ItemState.ACTIVE)
+        .filter((item)=> [...filterModal.itemStates].includes(item.itemState))
         .sort((a, b): any => {
           if (sortBy.sortName === 'expiryDate') {
             if (sortBy.sortOrder === 'asc') {
@@ -132,23 +140,43 @@ const App = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* MODAL VIEW */}
-      <ModalView
+      {/* MODAL VIEWS */}
+      <ItemModalView
         modalData={modalData}
         setModalData={setModalData}
         groceryData={groceryData}
         setGroceryData={setGroceryData}
       />
+      
+      <FilterModalView
+        filterModal={filterModal}
+        setFilterModal={setFilterModal}
+      />
 
       {/* MAIN LIST VIEW */}
       <VirtualizedList
         initialNumToRender={4}
-        renderItem={({ item }) => <Item setModalData={setModalData} modalData={modalData} item={item} handleStateChange={handleStateChange}/>}
+        renderItem={({ item }) => 
+          <Item
+            setModalData={setModalData}
+            modalData={modalData}
+            item={item}
+            handleStateChange={handleStateChange}
+            setFilterModal={setFilterModal}
+          />
+        }
         keyExtractor={item => item.id}
         getItemCount={getItemCount}
         getItem={getItem}
         data={sortedData}
-        ListHeaderComponent={<ListHeaderComponent sortBy={sortBy} setSortBy={setSortBy} />}
+        ListHeaderComponent={
+          <ListHeaderComponent
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            filterModal={filterModal}
+            setFilterModal={setFilterModal}
+          />
+        }
         stickyHeaderIndices={[0]}
       />
       <Button

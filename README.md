@@ -11,13 +11,12 @@
 - Connect Add Modal to Storage
 - Connect Edit to Modal to Storage
 - Add Delete Button (UI & Logic)
-
-## IN PROGRESS
 - Add Ate or Wasted Button (UI & Logic)
 
+## IN PROGRESS
+- Add Ate & Wasted Filter (UI & Logic)
 
 ### TODO
-- Add Ate & Wasted Filter (UI & Logic)
 - Add upload button for receipt pdfs (UI & Logic)
 - Add scrape items from receipt button (UI & Logic)
 - Add Notifications (hardcoded day before etc)
