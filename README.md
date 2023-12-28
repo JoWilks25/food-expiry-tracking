@@ -15,11 +15,11 @@
 - Add Ate & Wasted Filter (UI & Logic)
 
 ## IN PROGRESS
+- Add Notifications (hardcoded day before etc)
 
 ### TODO
 - Add upload button for receipt pdfs (UI & Logic)
 - Add scrape items from receipt button (UI & Logic)
-- Add Notifications (hardcoded day before etc)
 - Add Ability to adjust notifications (Date and time)
 
 
