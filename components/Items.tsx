@@ -7,8 +7,8 @@ import {
 } from 'react-native';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import { GroceryItemType, ItemState } from '../data/storage';
-import { modalDataType } from '../App';
+import { GroceryItemType, ItemState } from '../utilities/storage';
+import { modalDataType } from '../screens/MainScreen';
 
 interface ItemProps {
   item: GroceryItemType

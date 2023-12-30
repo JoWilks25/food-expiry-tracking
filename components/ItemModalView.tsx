@@ -10,8 +10,8 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../data/storage';
-import { modalDataType } from '../App';
+import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
+import { modalDataType } from '../screens/MainScreen';
 
 
 interface IProps {
@@ -66,11 +66,22 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
         const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
         if (modalData?.selectedId) {
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
-          Object.assign(groceryDataObject.items[foundIndex], {
-            name: formInputs.name,
-            expiryDate: expiryDate,
+          const newObject = {
             lastUpdateDate: todaysDate,
-          })
+          }
+          // Check if name and expiry date still the same, raise alert if so
+          if (
+            formInputs.name !== groceryDataObject.items[foundIndex].name
+            && expiryDate !== groceryDataObject.items[foundIndex].expiryDate
+          ) {
+            Alert.alert("No Changes Made")
+          }
+          Object.assign(newObject, { lastUpdateDate: todaysDate, })
+          // If expiryDate not changed, do not override
+          if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
+            Object.assign(newObject, { expiryDate: expiryDate, })
+          }
+          Object.assign(groceryDataObject.items[foundIndex], newObject)
         } else {
           const newId = groceryDataObject?.lastId + 1;
           newGroceryData = {

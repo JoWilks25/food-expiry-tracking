@@ -20,6 +20,7 @@
 ### TODO
 - Add upload button for receipt pdfs (UI & Logic)
 - Add scrape items from receipt button (UI & Logic)
+  - Include dealing with substitutions
 - Add Ability to adjust notifications (Date and time)
 
 

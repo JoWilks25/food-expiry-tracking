@@ -10,7 +10,7 @@ import {
 // import CheckBox from '@react-native-community/checkbox';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { filterModalType } from '../screens/MainScreen';
-import { ItemState } from '../data/storage';
+import { ItemState } from '../utilities/storage';
 
 
 interface IProps {

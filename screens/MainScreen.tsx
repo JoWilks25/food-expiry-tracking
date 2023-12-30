@@ -13,7 +13,7 @@ import moment from 'moment';
 import Item, { getItem, getItemCount } from '../components/Items';
 import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
-import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../data/storage'
+import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
 
 type sortNameType = 'name' | 'expiryDate';
