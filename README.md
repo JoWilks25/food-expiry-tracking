@@ -15,7 +15,8 @@
 - Add Ate & Wasted Filter (UI & Logic)
 
 ## IN PROGRESS
-- Add Notifications (hardcoded day before etc)
+- Add Notifications (hardcoded day before and on day of? etc)
+  - Batch all items by expiry date, and make combined notification
 
 ### TODO
 - Add upload button for receipt pdfs (UI & Logic)
