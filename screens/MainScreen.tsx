@@ -15,6 +15,7 @@ import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
+import { cancelAllScheduledNotificationsAsync } from 'expo-notifications';
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -44,7 +45,8 @@ const MainScreen = () => {
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
 
   // Manage initial loading
-  const saveNewState = (key: string, data: {[key: string]: any }): void => {
+  const saveNewState = (key: string, data: {[key: string]: any }): void => {// Cleanup
+    cancelAllScheduledNotificationsAsync()
     saveToStorage(key, data)
     setGroceryData(data.items)
     setModalData(defaultModalData)

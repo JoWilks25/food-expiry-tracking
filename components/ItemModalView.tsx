@@ -11,9 +11,10 @@ import {
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
-import { addLocalNotification, editLocalNotification } from '../utilities/notifications';
+import { addEditLocalNotification } from '../utilities/notifications';
 import { modalDataType } from '../screens/MainScreen';
 
+const dateFormat = 'YYYY-MM-DD';
 
 interface IProps {
   modalData: modalDataType;
@@ -24,7 +25,7 @@ interface IProps {
 
 interface formInputsState {
   expiryDate: any;
-  name: string | undefined;
+  name: string;
 }
 
 const defaultFormInputs = {
@@ -61,51 +62,62 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
       return Alert.alert("Please enter a name!");
     }
     loadFromStorage('groceryData')
-      .then((groceryDataObject: any) => {
+      .then( async (groceryDataObject: any) => {
         let newGroceryData = {...groceryDataObject};
-        const todaysDate = moment().format('YYYY-MM-DD');
-        const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
+        const todaysDate = moment().format(dateFormat);
+        const expiryDate = moment(formInputs.expiryDate).format(dateFormat);
+        // 
         if (modalData?.selectedId) {
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId);
-          const newObject = { lastUpdateDate: todaysDate };
-          // Check if name and expiry date still the same, raise alert if so
+          // Raise alert if name or expiry not changed
           if (
             formInputs.name !== groceryDataObject.items[foundIndex].name
             && expiryDate !== groceryDataObject.items[foundIndex].expiryDate
           ) {
             Alert.alert("No Changes Made");
           }
-          // If expiryDate not changed, do not override
+          // Create new object
+          const newObject = {
+            lastUpdateDate: todaysDate,
+            name: formInputs.name,
+            expiryDate,
+          };
+          // Check if expiry date changed, only trigger notification update/adding
           if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
-            // Update expiry date
-            Object.assign(newObject, { expiryDate: expiryDate, });
-            // Update Notfications
-
+            // Update Notfication
+            const scheduleId = await addEditLocalNotification(groceryDataObject.items[foundIndex])
+            Object.assign(newObject, { scheduleIds: [...groceryDataObject.items[foundIndex].scheduleIds, scheduleId], });
           }
-          // If name not changed, do not override
-          if (formInputs.name !== groceryDataObject.items[foundIndex].name) {
-            Object.assign(groceryDataObject.items[foundIndex], newObject);
-          }
-          Object.assign(newObject, { lastUpdateDate: todaysDate, });
+          // Override object within groceryDataObject
+          Object.assign(groceryDataObject.items[foundIndex], newObject);
         } else {
+          //
           const newId = groceryDataObject?.lastId + 1;
+          const newGroceryDataObject: GroceryItemType = {
+            id: newId,
+            addDate: todaysDate,
+            units: 1,
+            name: formInputs.name,
+            expiryDate: expiryDate,
+            lastUpdateDate: null,
+            itemState: ItemState.ACTIVE,
+            scheduleIds: [],
+          }
+          // Add scheduleId 
+          const scheduleId = await addEditLocalNotification(newGroceryDataObject)
+          newGroceryDataObject.scheduleIds.push(scheduleId);
+          console.log('newGroceryDataObject', newGroceryDataObject)
+          console.log('scheduleId', scheduleId)
           newGroceryData = {
             lastId: newId,
             items: [
               ...groceryDataObject.items,
-              {
-                id: newId,
-                addDate: todaysDate,
-                units: 1,
-                name: formInputs.name,
-                expiryDate: expiryDate,
-                lastUpdateDate: null,
-                itemState: ItemState.ACTIVE,
-                scheduleIds: [],
-              }
+              newGroceryDataObject,
             ]
           }
         }
+        // Update relevant states
+        console.log('newGroceryData:', newGroceryData)
         saveToStorage('groceryData', newGroceryData)
         setGroceryData(newGroceryData.items)
         setModalData({ isVisible: false, selectedId: null, })

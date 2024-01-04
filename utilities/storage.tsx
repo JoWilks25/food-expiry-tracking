@@ -19,7 +19,7 @@ export interface GroceryItemType {
   lastUpdateDate: string | null; 
   units: number; // Number of units
   itemState: ItemState;
-  scheduleIds: any[];
+  scheduleIds: string[];
   // quantity: number;
   // quantityMeasure: string;
   // price: number;
