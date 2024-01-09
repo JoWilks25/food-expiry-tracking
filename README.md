@@ -37,3 +37,7 @@
   - Add some Friction if they've pressed Eaten of Wasted by mistake?
 
 - Notifications
+  - Batching items into notifications based on date, so only 1 notification per day
+  - Future questions:
+    - Should each item have it's own notification?
+    - Should I allow setting of time specifically to each item?

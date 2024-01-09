@@ -15,11 +15,12 @@ export interface GroceryItemType {
   id: number;
   name: string;
   expiryDate: string;
+  reminderDate: string;
   addDate: string;
   lastUpdateDate: string | null; 
   units: number; // Number of units
   itemState: ItemState;
-  scheduleIds: string[];
+  // scheduleIds: string[];
   // quantity: number;
   // quantityMeasure: string;
   // price: number;
