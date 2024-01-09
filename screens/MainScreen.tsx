@@ -32,15 +32,6 @@ export type filterModalType = {
   itemStates: ItemState[];
 }
 
-// First, set the handler that will cause the notification
-// to show the alert
-setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
 
 // Always increment lastId by 1 before using for new item, so keep as 0
 const defaultStorageState = { lastId: 0, items: [] };
@@ -54,11 +45,11 @@ const MainScreen = () => {
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
 
   // Manage initial loading
-  const saveNewState = (key: string, data: {[key: string]: any }): void => {// Cleanup
-    cancelAllScheduledNotificationsAsync()
+  const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
     setGroceryData(data.items)
     setModalData(defaultModalData)
+    await cancelAllScheduledNotificationsAsync()
   }
   
   useEffect(() => {

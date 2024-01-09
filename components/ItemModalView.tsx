@@ -12,7 +12,7 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
-import { DEFAULT_REMINDER, updateNotification } from '../utilities/notifications';
+import { DEFAULT_REMINDER, ReminderType, updateNotification } from '../utilities/notifications';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -80,6 +80,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             && expiryDate !== groceryDataObject.items[foundIndex].expiryDate
           ) {
             Alert.alert("No Changes Made");
+            return;
           }
           // Create new object
           const newObject = {
@@ -90,29 +91,21 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           };
           // Check if expiry date changed, only trigger notification update/adding
           if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
+            // Check if items expiry date is greater than today
+            if (moment(expiryDate).isSameOrBefore(moment())) {
+              Alert.alert("Please select an expiry date greater than today");
+              return;
+            }
             // Add notification if necessary
             try {
-              await scheduleNotificationAsync({
-                content: {
-                   title: 'There are groceries expiring today',
-                   body: 'Click to see',
-                },
-                trigger: {
-                  // date: new Date(expiryDate),
-                }
-              })
-              await scheduleNotificationAsync({
-                content:
-                {
-                   title: `There are groceries expiring in ${DEFAULT_REMINDER} day`,
-                   body: 'Click to see',
-                },
-                trigger: {
-                  // date: new Date(expiryDate),
-                }
-              })
+              await updateNotification(expiryDate, ReminderType.dayOf)
             } catch (error) {
-
+              console.log(error)
+            }
+            try {
+              await updateNotification(reminderDate, ReminderType.before)
+            } catch (error) {
+              console.log(error)
             }
           }
           // Override object within groceryDataObject
@@ -130,29 +123,20 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             lastUpdateDate: null,
             itemState: ItemState.ACTIVE,
           }
-          // Add notification if necessary
+          // Check if items expiry date is greater than today
+          if (moment(expiryDate).isSameOrBefore(moment())) {
+            Alert.alert("Please select an expiry date greater than today");
+            return;
+          }
           try {
-            await scheduleNotificationAsync({
-              content: {
-                 title: 'There are groceries expiring today',
-                 body: 'Click to see',
-              },
-              trigger: {
-                // date: new Date(expiryDate),
-              }
-            })
-            await scheduleNotificationAsync({
-              content:
-              {
-                 title: `There are groceries expiring in ${DEFAULT_REMINDER} day`,
-                 body: 'Click to see',
-              },
-              trigger: {
-                // date: new Date(expiryDate),
-              }
-            })
+            await updateNotification(expiryDate, ReminderType.dayOf)
           } catch (error) {
-
+            console.log(error)
+          }
+          try {
+            await updateNotification(reminderDate, ReminderType.before)
+          } catch (error) {
+            console.log(error)
           }
           newGroceryData = {
             lastId: newId,

@@ -14,11 +14,13 @@ Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
-    shouldSetBadge: false,
+    shouldSetBadge: true,
   }),
 });
 
-export const DEFAULT_REMINDER = 1 // i.e. 1 day before expiry
+export const DEFAULT_REMINDER = 1; // i.e. 1 day before expiry
+export const DEFAULT_HOUR = 8;
+export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
 
 export enum ReminderType {
   dayOf = 'dayOf',
@@ -41,7 +43,6 @@ export enum ReminderType {
  */
 export const addScheduledNotification = async (content: NotificationContentInput, trigger: NotificationTriggerInput) => {
   let identifier = '';
-
   try {
     identifier = await scheduleNotificationAsync({
       content,
@@ -55,33 +56,33 @@ export const addScheduledNotification = async (content: NotificationContentInput
 }
 
 export const updateNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
+  console.log({notificationDate, reminderType})
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
-  const matchingNotification = scheduledNotifications.find((notification: any ) => moment.unix(notification?.trigger?.seconds).format('YYYY-MM-DD') === moment(notificationDate).format('YYYY-MM-DD') && notification.content.data.reminderType === reminderType);
+  console.log('scheduledNotifications:', scheduledNotifications)
+
+  const matchingNotification = scheduledNotifications.find((notification: any ) => 
+    moment.unix(notification?.trigger?.seconds).format(DEFAULT_DATE_FORMAT) === moment(notificationDate).format(DEFAULT_DATE_FORMAT)
+    && notification.content.data.reminderType === reminderType
+  );
+
   // Update notification based on reminderType and number of days before reminder.
   let notificationMessage = `There are groceries expiring ${reminderType === ReminderType.dayOf ? 'today' : 'tomorrow'}.`;
   if (DEFAULT_REMINDER > 1) {
     notificationMessage = `There are groceries expiring in ${DEFAULT_REMINDER} days.`;
   }
+  let date = new Date(notificationDate)
+  date.setHours(DEFAULT_HOUR)
+  console.log('date', date)
 
-  if (matchingNotification) {
-    // 1) create new notification including new groceryItem details
+  if (!matchingNotification) {
     await addScheduledNotification({
       title: notificationMessage,
-      body: `Open app to see}`,
+      body: `Open app to see`,
+      data: { reminderType }
     },
     {
-      date: new Date(notificationDate),
-    });
-    // 2) delete old notification
-    await cancelScheduledNotificationAsync(matchingNotification.identifier);
-  } else {
-    // If notification DOESN'T EXIST, just adds a new notification
-    await addScheduledNotification({
-      title: notificationMessage,
-      body: `Open app to see}`,
-    },
-    {
-      date: new Date(notificationDate),
+      date: date, 
+      // moment(notificationDate, DEFAULT_DATE_FORMAT).set("hour", DEFAULT_HOUR).unix(),
     });
   }
 }
