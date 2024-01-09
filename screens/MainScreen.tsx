@@ -15,7 +15,7 @@ import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
-import { cancelAllScheduledNotificationsAsync } from 'expo-notifications';
+import { cancelAllScheduledNotificationsAsync, setNotificationHandler } from 'expo-notifications';
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -32,6 +32,15 @@ export type filterModalType = {
   itemStates: ItemState[];
 }
 
+// First, set the handler that will cause the notification
+// to show the alert
+setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
 
 // Always increment lastId by 1 before using for new item, so keep as 0
 const defaultStorageState = { lastId: 0, items: [] };

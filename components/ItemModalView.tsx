@@ -11,8 +11,8 @@ import {
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
-import { addNotification, updateNotification } from '../utilities/notifications';
 import { modalDataType } from '../screens/MainScreen';
+import { DEFAULT_REMINDER, updateNotification } from '../utilities/notifications';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -28,8 +28,6 @@ interface formInputsState {
   reminderDate: any;
   name: string;
 }
-
-const DEFAULT_REMINDER = 1 // i.e. 1 day before expiry
 
 const defaultFormInputs = {
   expiryDate: new Date(),
@@ -92,9 +90,30 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           };
           // Check if expiry date changed, only trigger notification update/adding
           if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
-            // Update Notfication
-            const scheduleId = await updateNotification(groceryDataObject.items, newObject)
-            // Object.assign(newObject, { scheduleIds: [...groceryDataObject.items[foundIndex].scheduleIds, scheduleId], });
+            // Add notification if necessary
+            try {
+              await scheduleNotificationAsync({
+                content: {
+                   title: 'There are groceries expiring today',
+                   body: 'Click to see',
+                },
+                trigger: {
+                  // date: new Date(expiryDate),
+                }
+              })
+              await scheduleNotificationAsync({
+                content:
+                {
+                   title: `There are groceries expiring in ${DEFAULT_REMINDER} day`,
+                   body: 'Click to see',
+                },
+                trigger: {
+                  // date: new Date(expiryDate),
+                }
+              })
+            } catch (error) {
+
+            }
           }
           // Override object within groceryDataObject
           Object.assign(groceryDataObject.items[foundIndex], newObject);
@@ -110,13 +129,31 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             reminderDate: reminderDate,
             lastUpdateDate: null,
             itemState: ItemState.ACTIVE,
-            // scheduleIds: [expiryDate, ],
           }
-          // // Add scheduleId 
-          // const scheduleId = await addNotification(groceryDataObject.items, newGroceryDataObject)
-          // newGroceryDataObject.scheduleIds.push(scheduleId);
-          // console.log('newGroceryDataObject', newGroceryDataObject)
-          // console.log('scheduleId', scheduleId)
+          // Add notification if necessary
+          try {
+            await scheduleNotificationAsync({
+              content: {
+                 title: 'There are groceries expiring today',
+                 body: 'Click to see',
+              },
+              trigger: {
+                // date: new Date(expiryDate),
+              }
+            })
+            await scheduleNotificationAsync({
+              content:
+              {
+                 title: `There are groceries expiring in ${DEFAULT_REMINDER} day`,
+                 body: 'Click to see',
+              },
+              trigger: {
+                // date: new Date(expiryDate),
+              }
+            })
+          } catch (error) {
+
+          }
           newGroceryData = {
             lastId: newId,
             items: [
