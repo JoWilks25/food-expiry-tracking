@@ -58,21 +58,21 @@ export const addScheduledNotification = async (content: NotificationContentInput
 export const updateNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
   console.log({notificationDate, reminderType})
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
-  console.log('scheduledNotifications:', scheduledNotifications)
 
-  const matchingNotification = scheduledNotifications.find((notification: any ) => 
-    moment.unix(notification?.trigger?.seconds).format(DEFAULT_DATE_FORMAT) === moment(notificationDate).format(DEFAULT_DATE_FORMAT)
+  let notificationDateObj = new Date(notificationDate)
+  notificationDateObj.setHours(DEFAULT_HOUR)
+  const matchingNotification = scheduledNotifications.find((notification: any ) => {
+    return notification.trigger?.dateComponents?.year === notificationDateObj.getFullYear()
+    && notification.trigger?.dateComponents?.month === notificationDateObj.getMonth() + 1
+    && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
     && notification.content.data.reminderType === reminderType
-  );
-
+  });
+  console.log('matchingNotification', matchingNotification)
   // Update notification based on reminderType and number of days before reminder.
   let notificationMessage = `There are groceries expiring ${reminderType === ReminderType.dayOf ? 'today' : 'tomorrow'}.`;
   if (DEFAULT_REMINDER > 1) {
     notificationMessage = `There are groceries expiring in ${DEFAULT_REMINDER} days.`;
   }
-  let date = new Date(notificationDate)
-  date.setHours(DEFAULT_HOUR)
-  console.log('date', date)
 
   if (!matchingNotification) {
     await addScheduledNotification({
@@ -81,8 +81,13 @@ export const updateNotification = async (notificationDate: any, reminderType: Re
       data: { reminderType }
     },
     {
-      date: date, 
-      // moment(notificationDate, DEFAULT_DATE_FORMAT).set("hour", DEFAULT_HOUR).unix(),
+      // date: date,
+      year: notificationDateObj.getFullYear(),
+      month: notificationDateObj.getMonth() + 1,
+      day: notificationDateObj.getDate(),
+      hour: notificationDateObj.getHours(),
+      minute: notificationDateObj.getMinutes(),
+      second: notificationDateObj.getSeconds(),
     });
   }
 }

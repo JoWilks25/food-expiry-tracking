@@ -15,7 +15,7 @@ import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
-import { cancelAllScheduledNotificationsAsync, setNotificationHandler } from 'expo-notifications';
+import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync, setNotificationHandler } from 'expo-notifications';
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -109,7 +109,14 @@ const MainScreen = () => {
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
 
   // Functions for Modal
-  const modalAction = (event: any, item?: GroceryItemType) => {
+  const modalAction = async (event: any, item?: GroceryItemType) => {
+    const scheduledNotifications = await getAllScheduledNotificationsAsync();
+    scheduledNotifications.forEach((notification) => {
+      console.log({
+        id: notification.identifier,
+        dateComponent: notification.trigger?.dateComponents,
+      })
+    })
     setModalData({ ...modalData, isVisible: true, })
   }; 
 

@@ -147,7 +147,6 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           }
         }
         // Update relevant states
-        console.log('newGroceryData:', newGroceryData)
         saveToStorage('groceryData', newGroceryData)
         setGroceryData(newGroceryData.items)
         setModalData({ isVisible: false, selectedId: null, })
