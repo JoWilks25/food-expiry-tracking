@@ -5,12 +5,12 @@ import {
   Modal,
   Alert,
   StyleSheet,
-  TextInput,
   Button,
 } from 'react-native';
-import CheckBox from '@react-native-community/checkbox';
-import { filterModalType } from '../App';
-import { ItemState } from '../data/storage';
+// import CheckBox from '@react-native-community/checkbox';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { filterModalType } from '../screens/MainScreen';
+import { ItemState } from '../utilities/storage';
 
 
 interface IProps {
@@ -48,15 +48,14 @@ const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
             [ItemState.ACTIVE, ItemState.DELETED, ItemState.EATEN, ItemState.WASTED]?.map((item) => {
               return (
                 <View style={styles.checkbox} key={item}>
-                  <CheckBox
-                    disabled={false}
-                    value={filterModal.itemStates.includes(item)}
-                    onValueChange={() => onValueChange(item)}
-                    boxType="circle"
-                    animationDuration={0.1}
-                    onAnimationType="fade"
+                  <BouncyCheckbox
+                    style={{ marginTop: 16 }}
+                    // ref={(ref: any) => (bouncyCheckboxRef = ref)}
+                    isChecked={filterModal.itemStates.includes(item)}
+                    text={item}
+                    disableBuiltInState
+                    onPress={() => onValueChange(item)}
                   />
-                  <Text style={styles.checkboxText}>{item}</Text>
                 </View>
                   )
                 })

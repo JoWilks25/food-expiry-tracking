@@ -4,8 +4,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { SortByType, filterModalType } from '../App';
-import { ItemState } from '../data/storage';
+import { SortByType, filterModalType } from '../screens/MainScreen';
 
 type ListHeaderComponentProps = {
   sortBy: SortByType;

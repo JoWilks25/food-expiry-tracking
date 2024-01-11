@@ -10,9 +10,11 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../data/storage';
-import { modalDataType } from '../App';
+import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
+import { modalDataType } from '../screens/MainScreen';
+import { DEFAULT_REMINDER, ReminderType, updateNotification } from '../utilities/notifications';
 
+const dateFormat = 'YYYY-MM-DD';
 
 interface IProps {
   modalData: modalDataType;
@@ -23,28 +25,32 @@ interface IProps {
 
 interface formInputsState {
   expiryDate: any;
-  name: string | undefined;
+  reminderDate: any;
+  name: string;
 }
 
 const defaultFormInputs = {
   expiryDate: new Date(),
+  reminderDate: null,
   name: '',
 }
 
 const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
 
-  const [formInputs, setFormInputs] = useState<formInputsState>({
-    expiryDate: new Date(),
-    name: '',
-  })
+  const [formInputs, setFormInputs] = useState<formInputsState>(defaultFormInputs)
 
   useEffect(() => {
     if (modalData.selectedId) {
       const selectedgroceryDatum = groceryData?.find((groceryDatum) => groceryDatum.id === modalData.selectedId)
-      setFormInputs({
-        expiryDate: new Date(selectedgroceryDatum?.expiryDate),
-        name: selectedgroceryDatum?.name,
-      })
+      if (selectedgroceryDatum) {
+        setFormInputs({
+          expiryDate: new Date(selectedgroceryDatum.expiryDate),
+          reminderDate: new Date(selectedgroceryDatum.reminderDate),
+          name: selectedgroceryDatum?.name,
+        })
+      } else {
+        console.error('Unable to find existing groceryItem')
+      }
     }
     // Clear formInputs to default when modal closed
     return () => setFormInputs(defaultFormInputs);
@@ -57,38 +63,90 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
 
   const handleEditAdd = () => {
     if (!formInputs.name) {
-      return Alert.alert("Please enter a name!")
+      return Alert.alert("Please enter a name!");
     }
     loadFromStorage('groceryData')
-      .then((groceryDataObject: any) => {
-        let newGroceryData = {...groceryDataObject}
-        const todaysDate = moment().format('YYYY-MM-DD');
-        const expiryDate = moment(formInputs.expiryDate).format('YYYY-MM-DD');
+      .then( async (groceryDataObject: any) => {
+        let newGroceryData = {...groceryDataObject};
+        const todaysDate = moment().format(dateFormat);
+        const expiryDate = moment(formInputs.expiryDate).format(dateFormat);
+        const reminderDate = moment(formInputs.expiryDate).subtract(DEFAULT_REMINDER, 'days').format(dateFormat)
+        // EDITING
         if (modalData?.selectedId) {
-          const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId)
-          Object.assign(groceryDataObject.items[foundIndex], {
+          const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId);
+          // Raise alert if name or expiry not changed
+          if (
+            formInputs.name !== groceryDataObject.items[foundIndex].name
+            && expiryDate !== groceryDataObject.items[foundIndex].expiryDate
+          ) {
+            Alert.alert("No Changes Made");
+            return;
+          }
+          // Create new object
+          const newObject = {
+            lastUpdateDate: todaysDate,
+            name: formInputs.name,
+            expiryDate,
+            reminderDate,
+          };
+          // Check if expiry date changed, only trigger notification update/adding
+          if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
+            // Check if items expiry date is greater than today
+            if (moment(expiryDate).isSameOrBefore(moment())) {
+              Alert.alert("Please select an expiry date greater than today");
+              return;
+            }
+            // Add notification if necessary
+            try {
+              await updateNotification(expiryDate, ReminderType.dayOf)
+            } catch (error) {
+              console.log(error)
+            }
+            try {
+              await updateNotification(reminderDate, ReminderType.before)
+            } catch (error) {
+              console.log(error)
+            }
+          }
+          // Override object within groceryDataObject
+          Object.assign(groceryDataObject.items[foundIndex], newObject);
+        } else {
+          // ADDING
+          const newId = groceryDataObject?.lastId + 1;
+          const newGroceryDataObject: GroceryItemType = {
+            id: newId,
+            addDate: todaysDate,
+            units: 1,
             name: formInputs.name,
             expiryDate: expiryDate,
-            lastUpdateDate: todaysDate,
-          })
-        } else {
-          const newId = groceryDataObject?.lastId + 1;
+            reminderDate: reminderDate,
+            lastUpdateDate: null,
+            itemState: ItemState.ACTIVE,
+          }
+          // Check if items expiry date is greater than today
+          if (moment(expiryDate).isSameOrBefore(moment())) {
+            Alert.alert("Please select an expiry date greater than today");
+            return;
+          }
+          try {
+            await updateNotification(expiryDate, ReminderType.dayOf)
+          } catch (error) {
+            console.log(error)
+          }
+          try {
+            await updateNotification(reminderDate, ReminderType.before)
+          } catch (error) {
+            console.log(error)
+          }
           newGroceryData = {
             lastId: newId,
             items: [
               ...groceryDataObject.items,
-              {
-                id: newId,
-                addDate: todaysDate,
-                units: 1,
-                name: formInputs.name,
-                expiryDate: expiryDate,
-                lastUpdateDate: null,
-                itemState: ItemState.ACTIVE,
-              }
+              newGroceryDataObject,
             ]
           }
         }
+        // Update relevant states
         saveToStorage('groceryData', newGroceryData)
         setGroceryData(newGroceryData.items)
         setModalData({ isVisible: false, selectedId: null, })
