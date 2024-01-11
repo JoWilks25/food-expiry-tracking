@@ -17,7 +17,7 @@ import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
 import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
-import FileUploadComponent from '../components/FileUploadComponent';
+import FileSelectorComponent from '../components/FileSelectorComponent';
 
 
 type sortNameType = 'name' | 'expiryDate';
@@ -197,7 +197,7 @@ const MainScreen = () => {
             
           }}
         /> */}
-        <FileUploadComponent/>
+        <FileSelectorComponent/>
         <Button
           title={"Reset Storage"}
           onPress={() => {

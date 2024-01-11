@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 
 
-const FileUploadComponent = () => {
+const FileSelectorComponent = () => {
   const pickDocument = async () => {
     let document
     try {
@@ -13,9 +13,8 @@ const FileUploadComponent = () => {
       })
       console.log('document', document)
       if (!document.canceled) {
-        console.log('hit1')
-        const fileContents = await FileSystem.readAsStringAsync(document.assets[0].uri)
-        console.log('fileContents', fileContents)
+        const file = await FileSystem.readAsStringAsync(document?.assets?.[0]?.uri, { encoding: 'base64' })
+        console.log('file', file)
       }
     } catch (err) {
       if (document?.canceled) {
@@ -34,4 +33,4 @@ const FileUploadComponent = () => {
     </View>
   );
 };
-export default FileUploadComponent;
+export default FileSelectorComponent;
