@@ -7,5 +7,13 @@
       "**/*"
     ]
   },
-  "name": "food-expiry-tracking"
+  "name": "food-expiry-tracking",
+  "plugins": [
+    [
+      "expo-document-picker",
+      {
+        "iCloudContainerEnvironment": "Production"
+      }
+    ]
+  ]
 }

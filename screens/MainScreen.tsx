@@ -17,6 +17,8 @@ import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
 import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
+import FileUploadComponent from '../components/FileUploadComponent';
+
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -44,7 +46,7 @@ const MainScreen = () => {
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
-
+  
   // Manage initial loading
   const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
@@ -189,13 +191,13 @@ const MainScreen = () => {
         stickyHeaderIndices={[0]}
       />
       <View style={styles.buttonsWrapper}>
-        <Button
+        {/* <Button
           title={"Add from Receipt"}
-          // color="blue"
           onPress={() => {
             
           }}
-        />
+        /> */}
+        <FileUploadComponent/>
         <Button
           title={"Reset Storage"}
           onPress={() => {
