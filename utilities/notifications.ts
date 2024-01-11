@@ -67,7 +67,7 @@ export const updateNotification = async (notificationDate: any, reminderType: Re
     && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
     && notification.content.data.reminderType === reminderType
   });
-  console.log('matchingNotification', matchingNotification)
+
   // Update notification based on reminderType and number of days before reminder.
   let notificationMessage = `There are groceries expiring ${reminderType === ReminderType.dayOf ? 'today' : 'tomorrow'}.`;
   if (DEFAULT_REMINDER > 1) {
