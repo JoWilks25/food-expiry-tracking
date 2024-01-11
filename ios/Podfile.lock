@@ -6,7 +6,7 @@ PODS:
     - ExpoModulesCore
   - EXConstants (14.4.2):
     - ExpoModulesCore
-  - EXFileSystem (15.4.5):
+  - EXFileSystem (15.6.0):
     - ExpoModulesCore
   - EXFont (11.4.0):
     - ExpoModulesCore
@@ -15,6 +15,8 @@ PODS:
   - Expo (49.0.21):
     - ExpoModulesCore
   - ExpoDevice (5.6.0):
+    - ExpoModulesCore
+  - ExpoDocumentPicker (11.5.4):
     - ExpoModulesCore
   - ExpoHead (0.0.20):
     - ExpoModulesCore
@@ -478,6 +480,7 @@ DEPENDENCIES:
   - EXNotifications (from `../node_modules/expo-notifications/ios`)
   - Expo (from `../node_modules/expo`)
   - ExpoDevice (from `../node_modules/expo-device/ios`)
+  - ExpoDocumentPicker (from `../node_modules/expo-document-picker/ios`)
   - ExpoHead (from `../node_modules/expo-head/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
@@ -553,6 +556,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo"
   ExpoDevice:
     :path: "../node_modules/expo-device/ios"
+  ExpoDocumentPicker:
+    :path: "../node_modules/expo-document-picker/ios"
   ExpoHead:
     :path: "../node_modules/expo-head/ios"
   ExpoKeepAwake:
@@ -653,11 +658,12 @@ SPEC CHECKSUMS:
   DoubleConversion: 5189b271737e1565bdce30deb4a08d647e3f5f54
   EXApplication: 042aa2e3f05258a16962ea1a9914bf288db9c9a1
   EXConstants: ce5bbea779da8031ac818c36bea41b10e14d04e1
-  EXFileSystem: f8b838a880254de42a5a7da20ed5ce12e2697c1b
+  EXFileSystem: aec89226b638b82cdd6d6c15d75a8b7f0696226d
   EXFont: 738c44c390953ebcbab075a4848bfbef025fd9ee
   EXNotifications: 09394cbd7165f9a4a00a53328aa09bf874bae717
   Expo: 61a8e1aa94311557c137c0a4dfd4fe78281cfbb4
   ExpoDevice: 4b9825263a3f996fd5a89ec26426e22e6cbc32d6
+  ExpoDocumentPicker: 5cb7389ff935b4addefdd466a606de51a512e922
   ExpoHead: ac95331e2a45cb94f6aee8ba6b8cb3d0a2cc6817
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
   ExpoModulesCore: c480fd4e3c7c8e81f0a6ba3a7c56869f25fe016d
