@@ -17,13 +17,12 @@
   - Add Ability to add a New Notification (including not overlapping with existing Notification)
 
 ## IN PROGRESS
-  - Add Ability to edit existing Notification when edit expiry date on item
+- Add upload button for receipt pdfs (UI & Logic)
 
 ### TODO
-- Add upload button for receipt pdfs (UI & Logic)
 - Add scrape items from receipt button (UI & Logic)
   - Include dealing with substitutions
-- Add Ability to adjust notifications (Date and time)
+- Add Ability to edit existing Notification when edit expiry date on item
 
 
 ### Architectural Questions
