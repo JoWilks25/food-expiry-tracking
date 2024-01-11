@@ -13,10 +13,11 @@
 - Add Delete Button (UI & Logic)
 - Add Ate or Wasted Button (UI & Logic)
 - Add Ate & Wasted Filter (UI & Logic)
+- Add Notifications (hardcoded day before and on day of? etc)
+  - Add Ability to add a New Notification (including not overlapping with existing Notification)
 
 ## IN PROGRESS
-- Add Notifications (hardcoded day before and on day of? etc)
-  - Batch all items by expiry date, and make combined notification
+  - Add Ability to edit existing Notification when edit expiry date on item
 
 ### TODO
 - Add upload button for receipt pdfs (UI & Logic)
