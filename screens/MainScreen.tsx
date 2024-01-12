@@ -113,6 +113,7 @@ const MainScreen = () => {
 
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {
+    // -- TODO delete ------
     const scheduledNotifications = await getAllScheduledNotificationsAsync();
     scheduledNotifications.forEach((notification) => {
       console.log({
@@ -120,6 +121,7 @@ const MainScreen = () => {
         dateComponent: notification.trigger?.dateComponents,
       })
     })
+    // ---------------------
     setModalData({ ...modalData, isVisible: true, })
   }; 
 
