@@ -15,15 +15,16 @@
 - Add Ate & Wasted Filter (UI & Logic)
 - Add Notifications (hardcoded day before and on day of? etc)
   - Add Ability to add a New Notification (including not overlapping with existing Notification)
+- Add upload button for receipt ~~pdfs~~ (UI & Logic) (can't do pdfs with react native stuff so need to read from a plain text file)
 
 ## IN PROGRESS
-  - Add Ability to edit existing Notification when edit expiry date on item
+- Update Python script to:
+  - Output structured text file
+  - Include dealing with substitutions
+- Integrate Scrape from text functionaity into App
 
 ### TODO
-- Add upload button for receipt pdfs (UI & Logic)
-- Add scrape items from receipt button (UI & Logic)
-  - Include dealing with substitutions
-- Add Ability to adjust notifications (Date and time)
+- Add Ability to edit existing Notification when edit expiry date on item
 
 
 ### Architectural Questions

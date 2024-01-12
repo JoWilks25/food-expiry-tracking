@@ -8,6 +8,7 @@ import {
   StatusBar,
   Button,
   Alert,
+  View,
 } from 'react-native';
 import moment from 'moment';
 import Item, { getItem, getItemCount } from '../components/Items';
@@ -15,7 +16,9 @@ import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
-import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync, setNotificationHandler } from 'expo-notifications';
+import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
+import FileSelectorComponent from '../components/FileSelectorComponent';
+
 
 type sortNameType = 'name' | 'expiryDate';
 type sortOrderType = 'asc' | 'desc';
@@ -43,7 +46,7 @@ const MainScreen = () => {
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
-
+  
   // Manage initial loading
   const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
@@ -187,16 +190,25 @@ const MainScreen = () => {
         }
         stickyHeaderIndices={[0]}
       />
-      <Button
-        title={"Reset Storage"}
-        onPress={() => {
-          storage.remove({
-            key: 'groceryData',
-          }).then(() => {
-            saveNewState('groceryData', defaultStorageState)
-          });
-        }}
-      />
+      <View style={styles.buttonsWrapper}>
+        {/* <Button
+          title={"Add from Receipt"}
+          onPress={() => {
+            
+          }}
+        /> */}
+        <FileSelectorComponent/>
+        <Button
+          title={"Reset Storage"}
+          onPress={() => {
+            storage.remove({
+              key: 'groceryData',
+            }).then(() => {
+              saveNewState('groceryData', defaultStorageState)
+            });
+          }}
+        />
+      </View>
       <TouchableOpacity
         activeOpacity={0.7}
         onPress={modalAction}
@@ -237,6 +249,14 @@ const styles: any = StyleSheet.create({
   floatingButtonStyle: {
     resizeMode: 'contain',
     width: 50,
+    height: 50,
+  },
+  buttonsWrapper: {
+    flex: 1,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 155,
     height: 50,
   },
 })

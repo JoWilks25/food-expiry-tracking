@@ -5,7 +5,20 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "1de1cecf-06ca-44cc-8430-c2d307892ba1"
+      }
+    }
   },
-  "name": "food-expiry-tracking"
+  "name": "food-expiry-tracking",
+  "plugins": [
+    [
+      "expo-document-picker",
+      {
+        "iCloudContainerEnvironment": "Production"
+      }
+    ]
+  ]
 }
