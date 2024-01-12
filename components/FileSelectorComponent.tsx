@@ -9,12 +9,12 @@ const FileSelectorComponent = () => {
     let document
     try {
       document = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf',
+        type: 'text/plain',
       })
       console.log('document', document)
       if (!document.canceled) {
-        const file = await FileSystem.readAsStringAsync(document?.assets?.[0]?.uri, { encoding: 'base64' })
-        console.log('file', file)
+        const fileContents = await FileSystem.readAsStringAsync(document?.assets?.[0]?.uri)
+        console.log('fileContents', fileContents)
       }
     } catch (err) {
       if (document?.canceled) {
