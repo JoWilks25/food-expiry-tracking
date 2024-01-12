@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Button, Text } from 'react-native';
+import React from 'react';
+import { View, Button } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import moment from 'moment';
@@ -10,27 +10,30 @@ interface IProps {
   setGroceryData: (data: GroceryItemType[]) => void;
 }
 
-const FileSelectorComponent = ({setGroceryData}: IProps) => {
+const TEXT_DATE_FORMAT = 'DD/MM/YYYY';
+
+const FileSelectorComponent = ({ setGroceryData }: IProps) => {
   
-  const handleEditAdd = (itemArray: string[]): void => {
+  const handleEditAdd = async (itemArray: string[]): Promise<void> => {
     loadFromStorage('groceryData')
       .then( async (groceryDataObject: any) => {
-        let newGroceryData = {...groceryDataObject};
         const todaysDate = moment().format(DEFAULT_DATE_FORMAT);
-        itemArray.forEach(async (row: string): Promise<void> => {
+        const groceryItemsArray = [...groceryDataObject.items]
+        let lastId = groceryDataObject.lastId
+        itemArray.forEach(async (row: string, index: number): Promise<void> => {
           // Item Data
           const [expiryDateString, itemName, units] = row.split(',');
-          console.log('****', row, expiryDateString, itemName, units)
+          // console.log('****', row, expiryDateString, itemName, units)
           // Notification Dates
-          const expiryDate = moment(expiryDateString, 'DD/MM/YYYY').format(DEFAULT_DATE_FORMAT);
-          const reminderDate = moment(expiryDateString).subtract(DEFAULT_REMINDER, 'days').format(DEFAULT_DATE_FORMAT)
+          const expiryDate = moment(expiryDateString, TEXT_DATE_FORMAT).format(DEFAULT_DATE_FORMAT);
+          const reminderDate = moment(expiryDateString, TEXT_DATE_FORMAT).subtract(DEFAULT_REMINDER, 'days').format(DEFAULT_DATE_FORMAT)
           // Check if items expiry date is greater than today
           if (moment(expiryDate).isSameOrBefore(moment()) || expiryDate === "Invalid date") {
             console.debug("Item had expiry date same as or less than today, or was an Invalid date, will not add:", expiryDate);
             return;
           }
           // Construct new grocer item to add to newGroceryData
-          const newId = groceryDataObject?.lastId + 1;
+          const newId = lastId + 1;
           const newGroceryDataObject: GroceryItemType = {
             id: newId,
             addDate: todaysDate,
@@ -41,8 +44,8 @@ const FileSelectorComponent = ({setGroceryData}: IProps) => {
             lastUpdateDate: null,
             itemState: ItemState.ACTIVE,
           }
+          console.log('newGroceryDataObject', newGroceryDataObject)
           // Update or Add Notification for items expiry date
-          console.log('Went too far', expiryDateString, expiryDate)
           try {
             await updateNotification(expiryDate, ReminderType.dayOf)
           } catch (error) {
@@ -54,18 +57,18 @@ const FileSelectorComponent = ({setGroceryData}: IProps) => {
           } catch (error) {
             console.log(error)
           }
-          newGroceryData = {
-            lastId: newId,
-            items: [
-              ...groceryDataObject.items,
-              newGroceryDataObject,
-            ]
-          }
+          lastId = newId;
+          groceryItemsArray.push(newGroceryDataObject)
         })
+        console.log('groceryItemsArray', groceryItemsArray)
+        let newGroceryData = {
+          lastId,
+          items: groceryItemsArray,
+        };
         console.log('newGroceryData', newGroceryData)
         // Update relevant states
-        // saveToStorage('groceryData', newGroceryData)
-        // setGroceryData(newGroceryData.items)
+        saveToStorage('groceryData', newGroceryData)
+        setGroceryData(newGroceryData.items)
       })
       .catch((error: any) => {
         console.log('error', error)
@@ -81,9 +84,7 @@ const FileSelectorComponent = ({setGroceryData}: IProps) => {
       console.log('document', document)
       if (!document.canceled) {
         const fileContents = await FileSystem.readAsStringAsync(document?.assets?.[0]?.uri);
-        console.log('fileContents', fileContents)
         const itemArray = fileContents.split('\n');
-        console.log('itemArray', itemArray)
         handleEditAdd(itemArray)
       }
     } catch (err) {
@@ -99,6 +100,7 @@ const FileSelectorComponent = ({setGroceryData}: IProps) => {
   return (
     <View>
       <Button title="Pick Document" onPress={pickDocument} />
+      
       {/* <Button title="Upload File" onPress={uploadFile} /> */}
     </View>
   );

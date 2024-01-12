@@ -54,20 +54,20 @@ const MainScreen = () => {
     setModalData(defaultModalData)
     await cancelAllScheduledNotificationsAsync()
   }
-  
   useEffect(() => {
     // Check for existing data
     storage.load({
-        key: 'groceryData',
-        autoSync: true,
-        syncInBackground: true,
-        syncParams: {
-          extraFetchOptions: {
-          },
-          someFlag: true
-        }
-      })
-      .then(groceryData => {
+      key: 'groceryData',
+      autoSync: true,
+      syncInBackground: true,
+      syncParams: {
+        extraFetchOptions: {
+        },
+        someFlag: true
+      }
+    })
+    .then(groceryData => {
+        console.log('groceryData', groceryData)
         setGroceryData(groceryData.items)
       })
       .catch(err => {
@@ -199,7 +199,7 @@ const MainScreen = () => {
             
           }}
         /> */}
-        <FileSelectorComponent/>
+        <FileSelectorComponent setGroceryData={setGroceryData}/>
         <Button
           title={"Reset Storage"}
           onPress={() => {
