@@ -79,13 +79,11 @@ export const updateNotification = async (oldGroceryItem: GroceryItemType, newGro
       // => If no match delete notification with oldNotification date, otherwise do nothing (i.e. keep notification)
       if (!uniqueItemDates.has(oldNotificationDate)) {
         const scheduledNotifications = await getAllScheduledNotificationsAsync();
-        let notificationDateObj = new Date(oldNotificationDate)
-        notificationDateObj.setHours(DEFAULT_HOUR)
+        let notificationDateObj = new Date(oldNotificationDate);
         const matchingNotification = scheduledNotifications.find((notification: any ) => {
           return notification.trigger?.dateComponents?.year === notificationDateObj.getFullYear()
           && notification.trigger?.dateComponents?.month === notificationDateObj.getMonth() + 1
           && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
-          // && notification.content.data.reminderType === reminderType
         });
         if (matchingNotification) {
           await cancelScheduledNotificationAsync(matchingNotification.identifier);

@@ -113,8 +113,6 @@ const MainScreen = () => {
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
   
-  // console.log('groceryData mainscreen', groceryData)
-
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {
     // -- TODO delete ------

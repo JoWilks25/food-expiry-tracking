@@ -81,7 +81,6 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             Alert.alert("No Changes Made");
             return;
           }
-          console.log({formInputs, foundIndex})
           // Create new object
           const newObject = {
             lastUpdateDate: todaysDate,

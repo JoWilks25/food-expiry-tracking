@@ -17,10 +17,10 @@
   - Add Ability to add a New Notification (including not overlapping with existing Notification)
 - Add upload button for receipt ~~pdfs~~ (UI & Logic) (can't do pdfs with react native stuff so need to read from a plain text file)
 - Integrate Scrape from text functionaity into App
-
-## IN PROGRESS
 - Add Ability to edit existing Notification when edit expiry date on item
 - Fix not update when pick doc
+
+## IN PROGRESS
 
 ### TODO
 - Cleanup CSS issues
