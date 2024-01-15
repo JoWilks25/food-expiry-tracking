@@ -48,7 +48,7 @@ const MainScreen = () => {
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
+
   // Manage initial loading
   const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
@@ -89,7 +89,6 @@ const MainScreen = () => {
 
   // Functions for Header Components
   const sortedData = useMemo(() => { 
-    console.log('HIT 1!!!', groceryData)
     if (groceryData) {
       const sorted = groceryData                           
         .filter((item)=> [...filterModal.itemStates].includes(item.itemState))
@@ -109,13 +108,12 @@ const MainScreen = () => {
             }
           }
         })
-      console.log('HIT 2!!!')
       return sorted;
     }
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
   
-  console.log('groceryData mainscreen', groceryData)
+  // console.log('groceryData mainscreen', groceryData)
 
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {

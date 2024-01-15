@@ -71,8 +71,12 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
         const expiryDate = moment(formInputs.expiryDate).format(DEFAULT_DATE_FORMAT);
         const reminderDate = moment(formInputs.expiryDate).subtract(DEFAULT_REMINDER, 'days').format(DEFAULT_DATE_FORMAT)
         // EDITING
+        console.log('HIT1')
         if (modalData?.selectedId) {
+          console.log('HIT2 modalData?.selectedId:', modalData?.selectedId)
+          console.log('&&&', groceryDataObject)
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId);
+          console.log('HIT3 foundIndex:', foundIndex)
           // Raise alert if name or expiry not changed
           if (
             formInputs.name !== groceryDataObject.items[foundIndex].name
@@ -81,6 +85,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             Alert.alert("No Changes Made");
             return;
           }
+          console.log({formInputs, foundIndex})
           // Create new object
           const newObject = {
             lastUpdateDate: todaysDate,
