@@ -16,16 +16,14 @@
 - Add Notifications (hardcoded day before and on day of? etc)
   - Add Ability to add a New Notification (including not overlapping with existing Notification)
 - Add upload button for receipt ~~pdfs~~ (UI & Logic) (can't do pdfs with react native stuff so need to read from a plain text file)
-
-## IN PROGRESS
-- Update Python script to:
-  - Output structured text file
-  - Include dealing with substitutions
 - Integrate Scrape from text functionaity into App
 
-### TODO
+## IN PROGRESS
 - Add Ability to edit existing Notification when edit expiry date on item
 
+### TODO
+- Research how to install locally on iphone
+- Research how to deploy so installable from apple store
 
 ### Architectural Questions
 

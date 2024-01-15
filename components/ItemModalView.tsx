@@ -12,9 +12,8 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
-import { DEFAULT_REMINDER, ReminderType, updateNotification } from '../utilities/notifications';
+import { DEFAULT_REMINDER, ReminderType, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
 
-const dateFormat = 'YYYY-MM-DD';
 
 interface IProps {
   modalData: modalDataType;
@@ -68,9 +67,9 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
     loadFromStorage('groceryData')
       .then( async (groceryDataObject: any) => {
         let newGroceryData = {...groceryDataObject};
-        const todaysDate = moment().format(dateFormat);
-        const expiryDate = moment(formInputs.expiryDate).format(dateFormat);
-        const reminderDate = moment(formInputs.expiryDate).subtract(DEFAULT_REMINDER, 'days').format(dateFormat)
+        const todaysDate = moment().format(DEFAULT_DATE_FORMAT);
+        const expiryDate = moment(formInputs.expiryDate).format(DEFAULT_DATE_FORMAT);
+        const reminderDate = moment(formInputs.expiryDate).subtract(DEFAULT_REMINDER, 'days').format(DEFAULT_DATE_FORMAT)
         // EDITING
         if (modalData?.selectedId) {
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId);
@@ -128,11 +127,13 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             Alert.alert("Please select an expiry date greater than today");
             return;
           }
+          // Update or Add Notification for items expiry date
           try {
             await updateNotification(expiryDate, ReminderType.dayOf)
           } catch (error) {
             console.log(error)
           }
+          // Update or Add Notification for items day before expiry date
           try {
             await updateNotification(reminderDate, ReminderType.before)
           } catch (error) {
@@ -153,7 +154,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
         setFormInputs(defaultFormInputs)
       })
       .catch((error: any) => {
-      console.log('error', error)
+        console.log('error', error)
     });
   }
 
