@@ -118,9 +118,10 @@ const MainScreen = () => {
     // -- TODO delete ------
     const scheduledNotifications = await getAllScheduledNotificationsAsync();
     scheduledNotifications.forEach((notification) => {
-      console.log({
+      console.debug({
         id: notification.identifier,
         dateComponent: notification.trigger?.dateComponents,
+        reminderType: notification.content.data.reminderType,
       })
     })
     // ---------------------
@@ -136,7 +137,6 @@ const MainScreen = () => {
           let newGroceryData = {...groceryDataObject}
           const todaysDate = moment().format('YYYY-MM-DD');
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === itemId)
-          console.log('foundIndex', foundIndex)
           if (foundIndex < 0) {
             Alert.alert("Unable to find item")
             return
