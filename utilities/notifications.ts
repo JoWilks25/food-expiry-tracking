@@ -6,6 +6,7 @@ import { NotificationContentInput,
   cancelScheduledNotificationAsync,
 } from 'expo-notifications';
 import moment from 'moment';
+import { GroceryItemType, loadFromStorage } from './storage';
 
 
 // First, set the handler that will cause the notification
@@ -55,8 +56,51 @@ export const addScheduledNotification = async (content: NotificationContentInput
   return identifier;
 }
 
-export const updateNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
-  // console.log({notificationDate, reminderType})
+/**
+ * 
+ * @param oldGroceryItem Old GroceryItemType
+ * @param newGroceryItem new GroceryItemType
+ * @param reminderType dayOf or before
+ */
+export const updateNotification = async (oldGroceryItem: GroceryItemType, newGroceryItem: Partial<GroceryItemType>, reminderType: ReminderType): Promise<void> => {
+  // Source correct Notification date depending on reminderType
+  const dateKey = reminderType === ReminderType.dayOf ? 'expiryDate' : 'reminderDate';
+  const oldNotificationDate = oldGroceryItem[dateKey];
+  const newNotificationDate = newGroceryItem[dateKey];
+  // Attempt to add new notification date
+  await addNotification(newNotificationDate, reminderType);
+  // Check old notification date, and see if can delete
+  loadFromStorage('groceryData')
+    .then( async (groceryDataObject: any) => {
+      // Get all dates of groceryItems (except for one being edited) depending on reminderType (i.e. dayOf = expiryDate, before = reminderDate)
+      const otherGroceryItems = groceryDataObject.items.filter((groceryDatum: GroceryItemType): boolean => groceryDatum.id !== oldGroceryItem.id);
+      const uniqueItemDates = new Set(otherGroceryItems.map((groceryDatum: GroceryItemType): string => groceryDatum?.[dateKey]));
+      // See if any grocery Item has a notification date matching oldNotification date
+      // => If no match delete notification with oldNotification date, otherwise do nothing (i.e. keep notification)
+      if (!uniqueItemDates.has(oldNotificationDate)) {
+        const scheduledNotifications = await getAllScheduledNotificationsAsync();
+        let notificationDateObj = new Date(oldNotificationDate);
+        const matchingNotification = scheduledNotifications.find((notification: any ) => {
+          return notification.trigger?.dateComponents?.year === notificationDateObj.getFullYear()
+          && notification.trigger?.dateComponents?.month === notificationDateObj.getMonth() + 1
+          && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
+        });
+        if (matchingNotification) {
+          await cancelScheduledNotificationAsync(matchingNotification.identifier);
+        }
+      }
+    })
+    .catch((error: any) => {
+      console.log('error', error)
+  });
+}
+
+/**
+ * 
+ * @param notificationDate YYYY-MM-DD string
+ * @param reminderType  dayOf or before
+ */
+export const addNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
 
   let notificationDateObj = new Date(notificationDate)
@@ -73,7 +117,8 @@ export const updateNotification = async (notificationDate: any, reminderType: Re
   if (DEFAULT_REMINDER > 1) {
     notificationMessage = `There are groceries expiring in ${DEFAULT_REMINDER} days.`;
   }
-
+  
+  // Check if there is a matching notification for the new date, if not add new one
   if (!matchingNotification) {
     await addScheduledNotification({
       title: notificationMessage,

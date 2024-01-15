@@ -45,6 +45,7 @@ const FileSelectorComponent = ({ setGroceryData }: IProps) => {
             lastUpdateDate: null,
             itemState: ItemState.ACTIVE,
           }
+          groceryItemsArray.push(newGroceryDataObject);
           // Update or Add Notification for items expiry date
           try {
             await updateNotification(expiryDate, ReminderType.dayOf);
@@ -57,7 +58,6 @@ const FileSelectorComponent = ({ setGroceryData }: IProps) => {
           } catch (error) {
             console.log(error);
           }
-          groceryItemsArray.push(newGroceryDataObject);
         })
         let newGroceryData = {
           lastId,

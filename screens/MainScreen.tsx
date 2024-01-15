@@ -48,7 +48,7 @@ const MainScreen = () => {
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  
+
   // Manage initial loading
   const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
@@ -89,7 +89,6 @@ const MainScreen = () => {
 
   // Functions for Header Components
   const sortedData = useMemo(() => { 
-    console.log('HIT 1!!!', groceryData)
     if (groceryData) {
       const sorted = groceryData                           
         .filter((item)=> [...filterModal.itemStates].includes(item.itemState))
@@ -109,22 +108,20 @@ const MainScreen = () => {
             }
           }
         })
-      console.log('HIT 2!!!')
       return sorted;
     }
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
   
-  console.log('groceryData mainscreen', groceryData)
-
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {
     // -- TODO delete ------
     const scheduledNotifications = await getAllScheduledNotificationsAsync();
     scheduledNotifications.forEach((notification) => {
-      console.log({
+      console.debug({
         id: notification.identifier,
         dateComponent: notification.trigger?.dateComponents,
+        reminderType: notification.content.data.reminderType,
       })
     })
     // ---------------------
@@ -140,7 +137,6 @@ const MainScreen = () => {
           let newGroceryData = {...groceryDataObject}
           const todaysDate = moment().format('YYYY-MM-DD');
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === itemId)
-          console.log('foundIndex', foundIndex)
           if (foundIndex < 0) {
             Alert.alert("Unable to find item")
             return
