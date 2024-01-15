@@ -12,7 +12,7 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
-import { DEFAULT_REMINDER, ReminderType, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
+import { DEFAULT_REMINDER, ReminderType, addNotification, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
 
 
 interface IProps {
@@ -71,12 +71,8 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
         const expiryDate = moment(formInputs.expiryDate).format(DEFAULT_DATE_FORMAT);
         const reminderDate = moment(formInputs.expiryDate).subtract(DEFAULT_REMINDER, 'days').format(DEFAULT_DATE_FORMAT)
         // EDITING
-        console.log('HIT1')
         if (modalData?.selectedId) {
-          console.log('HIT2 modalData?.selectedId:', modalData?.selectedId)
-          console.log('&&&', groceryDataObject)
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === modalData.selectedId);
-          console.log('HIT3 foundIndex:', foundIndex)
           // Raise alert if name or expiry not changed
           if (
             formInputs.name !== groceryDataObject.items[foundIndex].name
@@ -100,20 +96,20 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               Alert.alert("Please select an expiry date greater than today");
               return;
             }
-            // Add notification if necessary
+            // Update notification if necessary
             try {
-              await updateNotification(expiryDate, ReminderType.dayOf)
+              await updateNotification(groceryDataObject.items[foundIndex], newObject, ReminderType.dayOf)
             } catch (error) {
               console.log(error)
             }
             try {
-              await updateNotification(reminderDate, ReminderType.before)
+              await updateNotification(groceryDataObject.items[foundIndex], newObject, ReminderType.before)
             } catch (error) {
               console.log(error)
             }
+            Object.assign(groceryDataObject.items[foundIndex], newObject);
           }
           // Override object within groceryDataObject
-          Object.assign(groceryDataObject.items[foundIndex], newObject);
         } else {
           // ADDING
           const newId = groceryDataObject?.lastId + 1;
@@ -134,13 +130,13 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           }
           // Update or Add Notification for items expiry date
           try {
-            await updateNotification(expiryDate, ReminderType.dayOf)
+            await addNotification(expiryDate, ReminderType.dayOf)
           } catch (error) {
             console.log(error)
           }
           // Update or Add Notification for items day before expiry date
           try {
-            await updateNotification(reminderDate, ReminderType.before)
+            await addNotification(reminderDate, ReminderType.before)
           } catch (error) {
             console.log(error)
           }

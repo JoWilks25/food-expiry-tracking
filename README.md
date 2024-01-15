@@ -20,9 +20,9 @@
 
 ## IN PROGRESS
 - Add Ability to edit existing Notification when edit expiry date on item
+- Fix not update when pick doc
 
 ### TODO
-- Fix not update when pick doc
 - Cleanup CSS issues
   - Buttons pushed off screen due to long text
   - Include Units display
