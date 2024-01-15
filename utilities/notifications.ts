@@ -51,12 +51,12 @@ export const addScheduledNotification = async (content: NotificationContentInput
   } catch (error) {
     console.error('Error occurred:', error)
   }
-  console.log('identifier:', identifier)
+  // console.log('identifier:', identifier)
   return identifier;
 }
 
 export const updateNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
-  console.log({notificationDate, reminderType})
+  // console.log({notificationDate, reminderType})
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
 
   let notificationDateObj = new Date(notificationDate)

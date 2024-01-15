@@ -9,6 +9,7 @@ import {
   Button,
   Alert,
   View,
+  Text,
 } from 'react-native';
 import moment from 'moment';
 import Item, { getItem, getItemCount } from '../components/Items';
@@ -46,6 +47,7 @@ const MainScreen = () => {
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
   // Manage initial loading
   const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
@@ -87,8 +89,9 @@ const MainScreen = () => {
 
   // Functions for Header Components
   const sortedData = useMemo(() => { 
+    console.log('HIT 1!!!', groceryData)
     if (groceryData) {
-      const sorted = groceryData
+      const sorted = groceryData                           
         .filter((item)=> [...filterModal.itemStates].includes(item.itemState))
         .sort((a, b): any => {
           if (sortBy.sortName === 'expiryDate') {
@@ -106,10 +109,13 @@ const MainScreen = () => {
             }
           }
         })
+      console.log('HIT 2!!!')
       return sorted;
     }
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
+  
+  console.log('groceryData mainscreen', groceryData)
 
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {
@@ -192,6 +198,7 @@ const MainScreen = () => {
         }
         stickyHeaderIndices={[0]}
       />
+      { isLoading && <Text>...loading</Text> }
       <View style={styles.buttonsWrapper}>
         {/* <Button
           title={"Add from Receipt"}
@@ -199,7 +206,7 @@ const MainScreen = () => {
             
           }}
         /> */}
-        <FileSelectorComponent setGroceryData={setGroceryData}/>
+        <FileSelectorComponent setGroceryData={setGroceryData} setIsLoading={setIsLoading}/>
         <Button
           title={"Reset Storage"}
           onPress={() => {
