@@ -67,6 +67,9 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!");
     }
+    if (Number(formInputs.units) < 1) {
+      return Alert.alert("Please select a quantity greater than 0!")
+    }
     loadFromStorage('groceryData')
       .then( async (groceryDataObject: any) => {
         let newGroceryData = {...groceryDataObject};
@@ -207,10 +210,12 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             <TextInput 
               style={styles.input}
               keyboardType='numeric'
-              onChangeText={(value) => setFormInputs(currState => ({
-                ...currState,
-                units: Number(value),
-              }))}
+              onChangeText={(value) => {
+                setFormInputs(currState => ({
+                  ...currState,
+                  units: Number(value),
+                }))
+              }}
               value={String(formInputs.units)}
               maxLength={10}  //setting limit of input
               returnKeyType="done"
