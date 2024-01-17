@@ -88,6 +88,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           const newObject = {
             lastUpdateDate: todaysDate,
             name: formInputs.name,
+            units: formInputs.units,
             expiryDate,
             reminderDate,
           };
@@ -109,8 +110,8 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             } catch (error) {
               console.log(error)
             }
-            Object.assign(groceryDataObject.items[foundIndex], newObject);
           }
+          Object.assign(groceryDataObject.items[foundIndex], newObject);
           // Override object within groceryDataObject
         } else {
           // ADDING
@@ -118,7 +119,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           const newGroceryDataObject: GroceryItemType = {
             id: newId,
             addDate: todaysDate,
-            units: 1,
+            units: formInputs.units,
             name: formInputs.name,
             expiryDate: expiryDate,
             reminderDate: reminderDate,
@@ -177,6 +178,13 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
                 setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
                 setFormInputs(defaultFormInputs);
               }}
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0
+             }}
               title="X" />
             <Text style={styles.modalText}>Name</Text>
             <TextInput
@@ -205,6 +213,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               }))}
               value={String(formInputs.units)}
               maxLength={10}  //setting limit of input
+              returnKeyType="done"
             />
             <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
           </View>
@@ -228,7 +237,6 @@ export const styles: any = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
