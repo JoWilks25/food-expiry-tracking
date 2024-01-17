@@ -69,7 +69,6 @@ const MainScreen = () => {
       }
     })
     .then(groceryData => {
-        console.log('groceryData', groceryData)
         setGroceryData(groceryData.items)
       })
       .catch(err => {

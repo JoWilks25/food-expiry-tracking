@@ -93,7 +93,7 @@ const FileSelectorComponent = ({ setGroceryData }: IProps) => {
       setIsLoading(false);
     }
   };
-  console.log('isLoading', isLoading)
+
   return (
     <View>
       <Button title="Pick Document" onPress={pickDocument} />
