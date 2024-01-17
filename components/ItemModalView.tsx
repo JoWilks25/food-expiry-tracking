@@ -181,13 +181,6 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
                 setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
                 setFormInputs(defaultFormInputs);
               }}
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0
-             }}
               title="X" />
             <Text style={styles.modalText}>Name</Text>
             <TextInput
