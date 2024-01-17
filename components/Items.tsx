@@ -47,7 +47,7 @@ const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
     </View>
     <View style={styles.row}>
         <View style={styles.leftColumn}>
-          <Text style={styles.name}>{item?.name}</Text>
+          <Text style={styles.name}>x{item?.units} {item?.name}</Text>
           <Text style={styles.name}>{item?.itemState !== ItemState.ACTIVE ? item?.itemState : ''}</Text>
         </View>
     </View>
