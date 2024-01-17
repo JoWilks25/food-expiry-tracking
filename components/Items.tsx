@@ -21,7 +21,6 @@ export const getItem = (data: GroceryItemType, index: number): ItemProps => data
 export const getItemCount = (data: ItemProps): number => data.length;
 
 
-
 const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
   <View style={styles.column}>
     <View style={styles.row}>
@@ -47,7 +46,7 @@ const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
     </View>
     <View style={styles.row}>
         <View style={styles.leftColumn}>
-          <Text style={styles.name}>x{item?.units} {item?.name}</Text>
+          <Text style={styles.name} numberOfLines={2}>x{item?.units} {item?.name}</Text>
           <Text style={styles.name}>{item?.itemState !== ItemState.ACTIVE ? item?.itemState : ''}</Text>
         </View>
     </View>
