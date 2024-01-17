@@ -21,29 +21,34 @@ export const getItem = (data: GroceryItemType, index: number): ItemProps => data
 export const getItemCount = (data: ItemProps): number => data.length;
 
 
+
 const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
   <View style={styles.column}>
     <View style={styles.row}>
+      <View style={styles.leftColumn}>
+        <Text style={styles.date}>{item?.expiryDate}</Text>
+      </View>
+      <View style={styles.rightColumn}>
+        <FAIcon
+          name="edit"
+          color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "#3B67CE"}
+          size={25}
+          disabled={item?.itemState !== ItemState.ACTIVE}
+          onPress={() => setModalData({ isVisible: true, selectedId: item?.id })}
+        />
+        <EntypoIcon
+          name="circle-with-cross"
+          color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "red"}
+          size={25}
+          disabled={item?.itemState !== ItemState.ACTIVE}
+          onPress={() => handleStateChange(item?.id, ItemState.DELETED)}
+        />
+      </View>
+    </View>
+    <View style={styles.row}>
         <View style={styles.leftColumn}>
-          <Text style={styles.date}>{item?.expiryDate}</Text>
           <Text style={styles.name}>{item?.name}</Text>
           <Text style={styles.name}>{item?.itemState !== ItemState.ACTIVE ? item?.itemState : ''}</Text>
-        </View>
-        <View style={styles.rightColumn}>
-          <FAIcon
-            name="edit"
-            color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "#3B67CE"}
-            size={25}
-            disabled={item?.itemState !== ItemState.ACTIVE}
-            onPress={() => setModalData({ isVisible: true, selectedId: item?.id })}
-          />
-          <EntypoIcon
-            name="circle-with-cross"
-            color={item?.itemState !== ItemState.ACTIVE ? "#D3D3D3" : "red"}
-            size={25}
-            disabled={item?.itemState !== ItemState.ACTIVE}
-            onPress={() => handleStateChange(item?.id, ItemState.DELETED)}
-          />
         </View>
     </View>
     <View style={styles.row}>
