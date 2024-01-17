@@ -26,12 +26,14 @@ interface formInputsState {
   expiryDate: any;
   reminderDate: any;
   name: string;
+  units: number;
 }
 
 const defaultFormInputs = {
   expiryDate: new Date(),
   reminderDate: null,
   name: '',
+  units: 1,
 }
 
 const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
@@ -46,6 +48,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           expiryDate: new Date(selectedgroceryDatum.expiryDate),
           reminderDate: new Date(selectedgroceryDatum.reminderDate),
           name: selectedgroceryDatum?.name,
+          units: Number(selectedgroceryDatum?.units),
         })
       } else {
         console.error('Unable to find existing groceryItem')
@@ -63,6 +66,9 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
   const handleEditAdd = () => {
     if (!formInputs.name) {
       return Alert.alert("Please enter a name!");
+    }
+    if (Number(formInputs.units) < 1) {
+      return Alert.alert("Please select a quantity greater than 0!")
     }
     loadFromStorage('groceryData')
       .then( async (groceryDataObject: any) => {
@@ -85,6 +91,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           const newObject = {
             lastUpdateDate: todaysDate,
             name: formInputs.name,
+            units: formInputs.units,
             expiryDate,
             reminderDate,
           };
@@ -106,8 +113,8 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             } catch (error) {
               console.log(error)
             }
-            Object.assign(groceryDataObject.items[foundIndex], newObject);
           }
+          Object.assign(groceryDataObject.items[foundIndex], newObject);
           // Override object within groceryDataObject
         } else {
           // ADDING
@@ -115,7 +122,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           const newGroceryDataObject: GroceryItemType = {
             id: newId,
             addDate: todaysDate,
-            units: 1,
+            units: formInputs.units,
             name: formInputs.name,
             expiryDate: expiryDate,
             reminderDate: reminderDate,
@@ -184,6 +191,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               }))}
               value={formInputs.name}
             />
+            <Text style={styles.modalText}>Expiry Date</Text>
             <DateTimePicker
               testID="dateTimePicker"
               value={formInputs.expiryDate}
@@ -191,6 +199,20 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               is24Hour={true}
               onChange={onChangeDate}
               />
+            <Text style={styles.modalText}>Quantity</Text>
+            <TextInput 
+              style={styles.input}
+              keyboardType='numeric'
+              onChangeText={(value) => {
+                setFormInputs(currState => ({
+                  ...currState,
+                  units: Number(value),
+                }))
+              }}
+              value={String(formInputs.units)}
+              maxLength={10}  //setting limit of input
+              returnKeyType="done"
+            />
             <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
           </View>
         </View>
@@ -213,7 +235,6 @@ export const styles: any = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
   },
   modalView: {
     margin: 20,
