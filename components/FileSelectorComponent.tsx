@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import moment from 'moment';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
-import { DEFAULT_REMINDER, ReminderType, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
+import { DEFAULT_REMINDER, ReminderType, addNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
 
 interface IProps {
   setGroceryData: (data: GroceryItemType[]) => void;
@@ -48,13 +48,13 @@ const FileSelectorComponent = ({ setGroceryData }: IProps) => {
           groceryItemsArray.push(newGroceryDataObject);
           // Update or Add Notification for items expiry date
           try {
-            await updateNotification(expiryDate, ReminderType.dayOf);
+            await addNotification(expiryDate, ReminderType.dayOf);
           } catch (error) {
             console.log(error);
           }
           // Update or Add Notification for items day before expiry date
           try {
-            await updateNotification(reminderDate, ReminderType.before);
+            await addNotification(reminderDate, ReminderType.before);
           } catch (error) {
             console.log(error);
           }
