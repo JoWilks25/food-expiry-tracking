@@ -26,12 +26,14 @@ interface formInputsState {
   expiryDate: any;
   reminderDate: any;
   name: string;
+  units: number;
 }
 
 const defaultFormInputs = {
   expiryDate: new Date(),
   reminderDate: null,
   name: '',
+  units: 1,
 }
 
 const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }: IProps) => {
@@ -46,6 +48,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           expiryDate: new Date(selectedgroceryDatum.expiryDate),
           reminderDate: new Date(selectedgroceryDatum.reminderDate),
           name: selectedgroceryDatum?.name,
+          units: Number(selectedgroceryDatum?.units),
         })
       } else {
         console.error('Unable to find existing groceryItem')
@@ -184,6 +187,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               }))}
               value={formInputs.name}
             />
+            <Text style={styles.modalText}>Expiry Date</Text>
             <DateTimePicker
               testID="dateTimePicker"
               value={formInputs.expiryDate}
@@ -191,6 +195,17 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               is24Hour={true}
               onChange={onChangeDate}
               />
+            <Text style={styles.modalText}>Quantity</Text>
+            <TextInput 
+              style={styles.input}
+              keyboardType='numeric'
+              onChangeText={(value) => setFormInputs(currState => ({
+                ...currState,
+                units: Number(value),
+              }))}
+              value={String(formInputs.units)}
+              maxLength={10}  //setting limit of input
+            />
             <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
           </View>
         </View>
