@@ -116,8 +116,9 @@ const MainScreen = () => {
   const modalAction = async (event: any, item?: GroceryItemType) => {
     // -- TODO delete ------
     const scheduledNotifications = await getAllScheduledNotificationsAsync();
+    console.log('scheduledNotifications no.', scheduledNotifications.length)
     scheduledNotifications.forEach((notification) => {
-      console.debug({
+      console.log({
         id: notification.identifier,
         dateComponent: notification.trigger?.dateComponents,
         reminderType: notification.content.data.reminderType,
