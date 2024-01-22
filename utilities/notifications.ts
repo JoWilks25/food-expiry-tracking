@@ -32,7 +32,6 @@ export enum ReminderType {
 
 // Get permissions for app
 export const askNotification = async () => {
-  console.log('Device?.isDevice', Device, Device?.isDevice)
   if (Device?.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;

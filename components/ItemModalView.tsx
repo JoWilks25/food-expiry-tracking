@@ -12,7 +12,7 @@ import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
-import { DEFAULT_REMINDER, ReminderType, addNotification, updateNotification, addScheduledNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
+import { DEFAULT_REMINDER, ReminderType, addNotification, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
 
 
 interface IProps {
@@ -136,26 +136,16 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           }
           // Update or Add Notification for items expiry date
           try {
-            const test = await addScheduledNotification({
-                title: 'WORK!!!',
-                body: 'why you no work?'
-              },
-              {
-                seconds: 60,
-                repeats: false,
-              }
-            )
-            console.log('test', test)
-            // await addNotification(expiryDate, ReminderType.dayOf)
+            await addNotification(expiryDate, ReminderType.dayOf)
           } catch (error) {
             console.log(error)
           }
-          // // Update or Add Notification for items day before expiry date
-          // try {
-          //   await addNotification(reminderDate, ReminderType.before)
-          // } catch (error) {
-          //   console.log(error)
-          // }
+          // Update or Add Notification for items day before expiry date
+          try {
+            await addNotification(reminderDate, ReminderType.before)
+          } catch (error) {
+            console.log(error)
+          }
           newGroceryData = {
             lastId: newId,
             items: [
