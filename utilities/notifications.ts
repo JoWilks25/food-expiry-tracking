@@ -12,14 +12,14 @@ import { GroceryItemType, loadFromStorage } from './storage';
 
 // First, set the handler that will cause the notification
 // to show the alert
-const test = Notifications.setNotificationHandler({
+Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
-console.log('test', test)
+
 
 export const DEFAULT_REMINDER = 1; // i.e. 1 day before expiry
 export const DEFAULT_HOUR = 8;
