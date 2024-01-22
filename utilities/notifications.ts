@@ -1,5 +1,5 @@
 import * as Notifications from 'expo-notifications';
-import Device from 'expo-device';
+import * as Device from 'expo-device';
 import { NotificationContentInput,
   NotificationTriggerInput,
   scheduleNotificationAsync,
