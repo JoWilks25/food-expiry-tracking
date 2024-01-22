@@ -52,7 +52,7 @@ export const addScheduledNotification = async (content: NotificationContentInput
   } catch (error) {
     console.error('Error occurred:', error)
   }
-  // console.log('identifier:', identifier)
+  console.log('identifier:', identifier)
   return identifier;
 }
 
@@ -102,7 +102,7 @@ export const updateNotification = async (oldGroceryItem: GroceryItemType, newGro
  */
 export const addNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
-
+  console.log('scheduledNotifications:', scheduledNotifications)
   let notificationDateObj = new Date(notificationDate)
   notificationDateObj.setHours(DEFAULT_HOUR)
   const matchingNotification = scheduledNotifications.find((notification: any ) => {
@@ -112,7 +112,7 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
     && notification.content.data.reminderType === reminderType
   });
 
-  // Update notification based on reminderType and number of days before reminder.
+  // Set notification based on reminderType and number of days before reminder.
   let notificationMessage = `There are groceries expiring ${reminderType === ReminderType.dayOf ? 'today' : 'tomorrow'}.`;
   if (DEFAULT_REMINDER > 1) {
     notificationMessage = `There are groceries expiring in ${DEFAULT_REMINDER} days.`;
@@ -125,6 +125,7 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
       body: `Open app to see`,
       data: { reminderType }
     },
+    // IOS specific
     {
       // date: date,
       year: notificationDateObj.getFullYear(),

@@ -54,8 +54,8 @@ const MainScreen = () => {
     saveToStorage(key, data)
     setGroceryData(data.items)
     setModalData(defaultModalData)
-    await cancelAllScheduledNotificationsAsync()
   }
+
   useEffect(() => {
     // Check for existing data
     storage.load({
@@ -208,8 +208,9 @@ const MainScreen = () => {
           onPress={() => {
             storage.remove({
               key: 'groceryData',
-            }).then(() => {
+            }).then(async () => {
               saveNewState('groceryData', defaultStorageState)
+              await cancelAllScheduledNotificationsAsync()
             });
           }}
         />
