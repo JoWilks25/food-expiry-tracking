@@ -19,6 +19,7 @@ import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } f
 import FilterModalView from '../components/FilterModalView';
 import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
 import FileSelectorComponent from '../components/FileSelectorComponent';
+import { askNotification } from '../utilities/notifications';
 
 
 type sortNameType = 'name' | 'expiryDate';
@@ -57,6 +58,7 @@ const MainScreen = () => {
   }
 
   useEffect(() => {
+    askNotification();
     // Check for existing data
     storage.load({
       key: 'groceryData',
@@ -209,8 +211,8 @@ const MainScreen = () => {
             storage.remove({
               key: 'groceryData',
             }).then(async () => {
-              saveNewState('groceryData', defaultStorageState)
-              await cancelAllScheduledNotificationsAsync()
+              saveNewState('groceryData', defaultStorageState);
+              await cancelAllScheduledNotificationsAsync();
             });
           }}
         />

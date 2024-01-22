@@ -21,6 +21,10 @@ This app uses expo for building the app. Currently, only IOS builds are properly
 
 In order to setup the ability to build follow the instructions here: https://docs.expo.dev/build/setup/
 
+## Commands - Development build:
+This will generate a development build that you can run while developing.
+`eas build --profile development --platform ios`
+
 ## Commands - Preview build:
 To generate 'production-like' build i.e. a build that lets you install and use on registered device without needing a running development server
 `eas build --profile preview --platform ios`

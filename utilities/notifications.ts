@@ -1,23 +1,25 @@
 import * as Notifications from 'expo-notifications';
+import Device from 'expo-device';
 import { NotificationContentInput,
   NotificationTriggerInput,
   scheduleNotificationAsync,
   getAllScheduledNotificationsAsync,
   cancelScheduledNotificationAsync,
 } from 'expo-notifications';
-import moment from 'moment';
+import { Alert } from 'react-native';
 import { GroceryItemType, loadFromStorage } from './storage';
 
 
 // First, set the handler that will cause the notification
 // to show the alert
-Notifications.setNotificationHandler({
+const test = Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: true,
   }),
 });
+console.log('test', test)
 
 export const DEFAULT_REMINDER = 1; // i.e. 1 day before expiry
 export const DEFAULT_HOUR = 8;
@@ -27,6 +29,27 @@ export enum ReminderType {
   dayOf = 'dayOf',
   before = 'before'
 }
+
+// Get permissions for app
+export const askNotification = async () => {
+  console.log('Device?.isDevice', Device, Device?.isDevice)
+  if (Device?.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert('Failed to get push token for push notification!');
+      return;
+    }
+  } else {
+    Alert.alert('Must use physical device for Push Notifications');
+  }
+};
+
+
 /**
  * 
  * @param content NotificationContentInput
@@ -45,6 +68,10 @@ export enum ReminderType {
 export const addScheduledNotification = async (content: NotificationContentInput, trigger: NotificationTriggerInput) => {
   let identifier = '';
   try {
+    console.log({
+      content,
+      trigger
+    })
     identifier = await scheduleNotificationAsync({
       content,
       trigger
@@ -53,6 +80,8 @@ export const addScheduledNotification = async (content: NotificationContentInput
     console.error('Error occurred:', error)
   }
   console.log('identifier:', identifier)
+  const allNotifications = await getAllScheduledNotificationsAsync();
+  console.log('allNotifications', allNotifications)
   return identifier;
 }
 
@@ -120,14 +149,24 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
   
   // Check if there is a matching notification for the new date, if not add new one
   if (!matchingNotification) {
-    await addScheduledNotification({
+    console.log({
+      year: notificationDateObj.getFullYear(),
+      month: notificationDateObj.getMonth() + 1,
+      day: notificationDateObj.getDate(),
+      hour: notificationDateObj.getHours(),
+      minute: notificationDateObj.getMinutes(),
+      second: notificationDateObj.getSeconds(),
+    })
+    const identifier = await addScheduledNotification({
       title: notificationMessage,
       body: `Open app to see`,
       data: { reminderType }
     },
-    // IOS specific
     {
-      // date: date,
+      // seconds: 60,
+      // repeats: false,
+      // // date: date,
+      // IOS specific
       year: notificationDateObj.getFullYear(),
       month: notificationDateObj.getMonth() + 1,
       day: notificationDateObj.getDate(),
@@ -135,5 +174,6 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
       minute: notificationDateObj.getMinutes(),
       second: notificationDateObj.getSeconds(),
     });
+    // console.log('addNotification identifier:', identifier)
   }
 }
