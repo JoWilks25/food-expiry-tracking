@@ -67,10 +67,6 @@ export const askNotification = async () => {
 export const addScheduledNotification = async (content: NotificationContentInput, trigger: NotificationTriggerInput) => {
   let identifier = '';
   try {
-    console.log({
-      content,
-      trigger
-    })
     identifier = await scheduleNotificationAsync({
       content,
       trigger
@@ -78,9 +74,6 @@ export const addScheduledNotification = async (content: NotificationContentInput
   } catch (error) {
     console.error('Error occurred:', error)
   }
-  console.log('identifier:', identifier)
-  const allNotifications = await getAllScheduledNotificationsAsync();
-  console.log('allNotifications', allNotifications)
   return identifier;
 }
 
@@ -130,7 +123,6 @@ export const updateNotification = async (oldGroceryItem: GroceryItemType, newGro
  */
 export const addNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
-  console.log('scheduledNotifications:', scheduledNotifications)
   let notificationDateObj = new Date(notificationDate)
   notificationDateObj.setHours(DEFAULT_HOUR)
   const matchingNotification = scheduledNotifications.find((notification: any ) => {
@@ -148,22 +140,12 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
   
   // Check if there is a matching notification for the new date, if not add new one
   if (!matchingNotification) {
-    console.log({
-      year: notificationDateObj.getFullYear(),
-      month: notificationDateObj.getMonth() + 1,
-      day: notificationDateObj.getDate(),
-      hour: notificationDateObj.getHours(),
-      minute: notificationDateObj.getMinutes(),
-      second: notificationDateObj.getSeconds(),
-    })
-    const identifier = await addScheduledNotification({
+    await addScheduledNotification({
       title: notificationMessage,
       body: `Open app to see`,
       data: { reminderType }
     },
     {
-      // seconds: 60,
-      // repeats: false,
       // // date: date,
       // IOS specific
       year: notificationDateObj.getFullYear(),
@@ -173,6 +155,5 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
       minute: notificationDateObj.getMinutes(),
       second: notificationDateObj.getSeconds(),
     });
-    // console.log('addNotification identifier:', identifier)
   }
 }
