@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { cancelAllScheduledNotificationsAsync } from 'expo-notifications';
+import moment from 'moment';
 import { devToolDataType } from '../screens/MainScreen';
 import storage, { loadFromStorage } from '../utilities/storage';
-
 
 interface IProps {
   saveNewState: (key: string, data: { [key: string]: any }) => Promise<void>;
@@ -18,7 +18,19 @@ interface IProps {
   setDevToolData: (devToolData: devToolDataType) => void;
 }
 
+
 const DevToolView = ({ saveNewState, devToolData, setDevToolData }: IProps) => {
+
+  const downloadFile = async (content: string): Promise<void> => {
+    const fileUri = `${FileSystem.documentDirectory}${moment().toISOString()}test-file`;
+    try {
+      await FileSystem.downloadAsync('https://gist.github.com/JoWilks25/4c4ba7ab643cd882e8ddccdca81d9d41.js', fileUri);
+      await FileSystem.writeAsStringAsync(fileUri, JSON.stringify(content))
+    } catch (error) {
+      console.log('Error occured:', error)
+    }
+  };
+
   return (
     <View style={styles.centeredView}>
       <Modal
@@ -52,7 +64,7 @@ const DevToolView = ({ saveNewState, devToolData, setDevToolData }: IProps) => {
               onPress={() => {
                 loadFromStorage('groceryData')
                   .then( async (groceryDataObject: any) => {
-                    console.log('groceryDataObject:', groceryDataObject)
+                    await downloadFile(groceryDataObject);
                   })
                   .catch((error: any) => {
                     console.log('error', error)
