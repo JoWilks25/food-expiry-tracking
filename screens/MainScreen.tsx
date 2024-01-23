@@ -12,7 +12,7 @@ import {
   Text,
 } from 'react-native';
 import moment from 'moment';
-import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
+import { getAllScheduledNotificationsAsync } from 'expo-notifications';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import { askNotification } from '../utilities/notifications';
 import Item, { getItem, getItemCount } from '../components/Items';
@@ -20,6 +20,7 @@ import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
 import FilterModalView from '../components/FilterModalView';
 import FileSelectorComponent from '../components/FileSelectorComponent';
+import DevToolView from '../components/DevToolModalView';
 
 
 type sortNameType = 'name' | 'expiryDate';
@@ -30,28 +31,32 @@ export type SortByType = {
 };
 export type modalDataType = {
   isVisible: boolean;
-  selectedId: number | null 
+  selectedId: number | null
 }
 export type filterModalType = {
   isVisible: boolean;
   itemStates: ItemState[];
 }
-
+export type devToolDataType = {
+  isVisible: boolean;
+}
 
 // Always increment lastId by 1 before using for new item, so keep as 0
-const defaultStorageState = { lastId: 0, items: [] };
+export const defaultStorageState = { lastId: 0, items: [] };
 const defaultModalData = { isVisible: false, selectedId: null };
 const defaultFilterData = { isVisible: false, itemStates: [ItemState.ACTIVE] };
+const defaultDevToolData = { isVisible: false };
 
 const MainScreen = () => {
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
   const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
+  const [devToolData, setDevToolData] = useState<devToolDataType>(defaultDevToolData);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Manage initial loading
-  const saveNewState = async (key: string, data: {[key: string]: any }): Promise<void> => {// Cleanup
+  const saveNewState = async (key: string, data: { [key: string]: any }): Promise<void> => {// Cleanup
     saveToStorage(key, data)
     setGroceryData(data.items)
     setModalData(defaultModalData)
@@ -70,7 +75,7 @@ const MainScreen = () => {
         someFlag: true
       }
     })
-    .then(groceryData => {
+      .then(groceryData => {
         setGroceryData(groceryData.items)
       })
       .catch(err => {
@@ -89,10 +94,10 @@ const MainScreen = () => {
   }, [])
 
   // Functions for Header Components
-  const sortedData = useMemo(() => { 
+  const sortedData = useMemo(() => {
     if (groceryData) {
-      const sorted = groceryData                           
-        .filter((item)=> [...filterModal.itemStates].includes(item.itemState))
+      const sorted = groceryData
+        .filter((item) => [...filterModal.itemStates].includes(item.itemState))
         .sort((a, b): any => {
           if (sortBy.sortName === 'expiryDate') {
             if (sortBy.sortOrder === 'asc') {
@@ -113,7 +118,7 @@ const MainScreen = () => {
     }
     return []
   }, [groceryData, sortBy.sortName, sortBy.sortOrder, filterModal.itemStates]);
-  
+
   // Functions for Modal
   const modalAction = async (event: any, item?: GroceryItemType) => {
     // -- TODO delete ------
@@ -128,15 +133,15 @@ const MainScreen = () => {
     })
     // ---------------------
     setModalData({ ...modalData, isVisible: true, })
-  }; 
+  };
 
   // Functions for Item Actions
   const handleStateChange = (itemId: number, newItemState: ItemState): void => {
-    if (!itemId) { Alert.alert("Unable to delete")}
+    if (!itemId) { Alert.alert("Unable to delete") }
     if (itemId) {
       loadFromStorage('groceryData')
         .then((groceryDataObject: any) => {
-          let newGroceryData = {...groceryDataObject}
+          let newGroceryData = { ...groceryDataObject }
           const todaysDate = moment().format('YYYY-MM-DD');
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === itemId)
           if (foundIndex < 0) {
@@ -165,17 +170,23 @@ const MainScreen = () => {
         groceryData={groceryData}
         setGroceryData={setGroceryData}
       />
-      
+
       <FilterModalView
         filterModal={filterModal}
         setFilterModal={setFilterModal}
+      />
+
+      <DevToolView
+        saveNewState={saveNewState}
+        devToolData={devToolData}
+        setDevToolData={setDevToolData}
       />
 
       {/* MAIN LIST VIEW */}
       <View style={styles.listContainer}>
         <VirtualizedList
           initialNumToRender={4}
-          renderItem={({ item }) => 
+          renderItem={({ item }) =>
             <Item
               setModalData={setModalData}
               item={item}
@@ -197,19 +208,14 @@ const MainScreen = () => {
           }
           stickyHeaderIndices={[0]}
         />
-        { isLoading && <Text>...loading</Text> }
+        {isLoading && <Text>...loading</Text>}
       </View>
       <View style={styles.buttonsWrapper}>
-        <FileSelectorComponent setGroceryData={setGroceryData} setIsLoading={setIsLoading}/>
+        <FileSelectorComponent setGroceryData={setGroceryData} setIsLoading={setIsLoading} />
         <Button
-          title={"Reset Storage"}
+          title="Dev Tools"
           onPress={() => {
-            storage.remove({
-              key: 'groceryData',
-            }).then(async () => {
-              saveNewState('groceryData', defaultStorageState);
-              await cancelAllScheduledNotificationsAsync();
-            });
+            setDevToolData({ isVisible: true, })
           }}
         />
       </View>
