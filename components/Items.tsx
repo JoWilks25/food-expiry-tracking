@@ -25,7 +25,7 @@ const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
   <View style={styles.column}>
     <View style={styles.row}>
       <View style={styles.leftColumn}>
-        <Text style={styles.date}>{item?.expiryDate}</Text>
+        <Text style={styles.date}>Expires: {item?.expiryDate}</Text>
       </View>
       <View style={styles.rightColumn}>
         <FAIcon
