@@ -9,6 +9,8 @@ import FAIcon from 'react-native-vector-icons/FontAwesome5';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
+import { DEFAULT_DATE_FORMAT } from '../utilities/notifications';
+import moment from 'moment';
 
 interface ItemProps {
   item: GroceryItemType
@@ -25,7 +27,7 @@ const Item = ({ item, setModalData, handleStateChange }: ItemProps) => (
   <View style={styles.column}>
     <View style={styles.row}>
       <View style={styles.leftColumn}>
-        <Text style={styles.date}>Expires: {item?.expiryDate}</Text>
+        <Text style={styles.date}>Expires {moment(item?.expiryDate, DEFAULT_DATE_FORMAT).fromNow()}</Text>
       </View>
       <View style={styles.rightColumn}>
         <FAIcon
