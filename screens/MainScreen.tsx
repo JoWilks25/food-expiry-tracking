@@ -49,7 +49,7 @@ const defaultDevToolData = { isVisible: false };
 
 const MainScreen = () => {
   const [groceryData, setGroceryData] = useState<GroceryItemType[]>();
-  const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'desc' });
+  const [sortBy, setSortBy] = useState<SortByType>({ sortName: 'expiryDate', sortOrder: 'asc' });
   const [modalData, setModalData] = useState<modalDataType>(defaultModalData);
   const [filterModal, setFilterModal] = useState<filterModalType>(defaultFilterData);
   const [devToolData, setDevToolData] = useState<devToolDataType>(defaultDevToolData);
