@@ -12,12 +12,13 @@ import {
   Text,
 } from 'react-native';
 import moment from 'moment';
+import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
+import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
+import { askNotification } from '../utilities/notifications';
 import Item, { getItem, getItemCount } from '../components/Items';
 import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
-import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import FilterModalView from '../components/FilterModalView';
-import { cancelAllScheduledNotificationsAsync, getAllScheduledNotificationsAsync } from 'expo-notifications';
 import FileSelectorComponent from '../components/FileSelectorComponent';
 
 
@@ -54,9 +55,10 @@ const MainScreen = () => {
     saveToStorage(key, data)
     setGroceryData(data.items)
     setModalData(defaultModalData)
-    await cancelAllScheduledNotificationsAsync()
   }
+
   useEffect(() => {
+    askNotification();
     // Check for existing data
     storage.load({
       key: 'groceryData',
@@ -208,8 +210,9 @@ const MainScreen = () => {
           onPress={() => {
             storage.remove({
               key: 'groceryData',
-            }).then(() => {
-              saveNewState('groceryData', defaultStorageState)
+            }).then(async () => {
+              saveNewState('groceryData', defaultStorageState);
+              await cancelAllScheduledNotificationsAsync();
             });
           }}
         />

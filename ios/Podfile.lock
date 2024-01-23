@@ -15,7 +15,7 @@ PODS:
     - ExpoModulesCore
   - EXNotifications (0.20.1):
     - ExpoModulesCore
-  - Expo (49.0.21):
+  - Expo (49.0.22):
     - ExpoModulesCore
   - expo-dev-client (2.4.12):
     - EXManifests
@@ -80,7 +80,7 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (12.3.0):
     - ExpoModulesCore
-  - ExpoModulesCore (1.5.12):
+  - ExpoModulesCore (1.5.13):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
     - React-NativeModulesApple
@@ -524,8 +524,6 @@ PODS:
     - React-Core
   - RNDateTimePicker (7.2.0):
     - React-Core
-  - RNFS (2.20.0):
-    - React-Core
   - SocketRocket (0.6.1)
   - Yoga (1.14.0)
 
@@ -593,7 +591,6 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCCheckbox (from `../node_modules/@react-native-community/checkbox`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
-  - RNFS (from `../node_modules/react-native-fs`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -727,8 +724,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/checkbox"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
-  RNFS:
-    :path: "../node_modules/react-native-fs"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -743,7 +738,7 @@ SPEC CHECKSUMS:
   EXJSONUtils: 6802be4282d42b97c51682468ddc1026a06f8276
   EXManifests: cf66451b11b2c2f6464917528d792759f7fd6ce0
   EXNotifications: 09394cbd7165f9a4a00a53328aa09bf874bae717
-  Expo: 61a8e1aa94311557c137c0a4dfd4fe78281cfbb4
+  Expo: 9060b49fecf07bebf1dd967730d079aa5e750ebe
   expo-dev-client: 1e20e0d67534fd63da37604747a60e7d69fc46f5
   expo-dev-launcher: e9411e0c91abaa448682d0fa688957e7dbff356e
   expo-dev-menu: f7036f78c69f0f6ecb386f5543a06266dde64bf5
@@ -752,7 +747,7 @@ SPEC CHECKSUMS:
   ExpoDocumentPicker: 5cb7389ff935b4addefdd466a606de51a512e922
   ExpoHead: ac95331e2a45cb94f6aee8ba6b8cb3d0a2cc6817
   ExpoKeepAwake: be4cbd52d9b177cde0fd66daa1913afa3161fc1d
-  ExpoModulesCore: c480fd4e3c7c8e81f0a6ba3a7c56869f25fe016d
+  ExpoModulesCore: cf14fc49a3d5df3ed3cf2a38fc758d073bfd1c13
   EXSplashScreen: c0e7f2d4a640f3b875808ed0b88575538daf6d82
   EXUpdatesInterface: 82ed48d417cdcd376c12ca1c2ce390d35500bed6
   FBLazyVector: 748c0ef74f2bf4b36cfcccf37916806940a64c32
@@ -797,7 +792,6 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
   RNCCheckbox: 75255b03e604bbcc26411eb31c4cbe3e3865f538
   RNDateTimePicker: 3942382593f104af226ad9c56e16166960c7ae30
-  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
 

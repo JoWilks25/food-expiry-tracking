@@ -1,11 +1,12 @@
 import * as Notifications from 'expo-notifications';
+import * as Device from 'expo-device';
 import { NotificationContentInput,
   NotificationTriggerInput,
   scheduleNotificationAsync,
   getAllScheduledNotificationsAsync,
   cancelScheduledNotificationAsync,
 } from 'expo-notifications';
-import moment from 'moment';
+import { Alert } from 'react-native';
 import { GroceryItemType, loadFromStorage } from './storage';
 
 
@@ -19,6 +20,7 @@ Notifications.setNotificationHandler({
   }),
 });
 
+
 export const DEFAULT_REMINDER = 1; // i.e. 1 day before expiry
 export const DEFAULT_HOUR = 8;
 export const DEFAULT_DATE_FORMAT = 'YYYY-MM-DD';
@@ -27,6 +29,26 @@ export enum ReminderType {
   dayOf = 'dayOf',
   before = 'before'
 }
+
+// Get permissions for app
+export const askNotification = async () => {
+  if (Device?.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      Alert.alert('Failed to get push token for push notification!');
+      return;
+    }
+  } else {
+    Alert.alert('Must use physical device for Push Notifications');
+  }
+};
+
+
 /**
  * 
  * @param content NotificationContentInput
@@ -52,7 +74,6 @@ export const addScheduledNotification = async (content: NotificationContentInput
   } catch (error) {
     console.error('Error occurred:', error)
   }
-  // console.log('identifier:', identifier)
   return identifier;
 }
 
@@ -102,7 +123,6 @@ export const updateNotification = async (oldGroceryItem: GroceryItemType, newGro
  */
 export const addNotification = async (notificationDate: any, reminderType: ReminderType): Promise<void> => {
   const scheduledNotifications = await getAllScheduledNotificationsAsync();
-
   let notificationDateObj = new Date(notificationDate)
   notificationDateObj.setHours(DEFAULT_HOUR)
   const matchingNotification = scheduledNotifications.find((notification: any ) => {
@@ -112,7 +132,7 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
     && notification.content.data.reminderType === reminderType
   });
 
-  // Update notification based on reminderType and number of days before reminder.
+  // Set notification based on reminderType and number of days before reminder.
   let notificationMessage = `There are groceries expiring ${reminderType === ReminderType.dayOf ? 'today' : 'tomorrow'}.`;
   if (DEFAULT_REMINDER > 1) {
     notificationMessage = `There are groceries expiring in ${DEFAULT_REMINDER} days.`;
@@ -126,7 +146,8 @@ export const addNotification = async (notificationDate: any, reminderType: Remin
       data: { reminderType }
     },
     {
-      // date: date,
+      // // date: date,
+      // IOS specific
       year: notificationDateObj.getFullYear(),
       month: notificationDateObj.getMonth() + 1,
       day: notificationDateObj.getDate(),
