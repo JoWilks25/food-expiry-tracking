@@ -172,38 +172,34 @@ const MainScreen = () => {
       />
 
       {/* MAIN LIST VIEW */}
-      <VirtualizedList
-        initialNumToRender={4}
-        renderItem={({ item }) => 
-          <Item
-            setModalData={setModalData}
-            item={item}
-            handleStateChange={handleStateChange}
-            setFilterModal={setFilterModal}
-          />
-        }
-        keyExtractor={item => item.id}
-        getItemCount={getItemCount}
-        getItem={getItem}
-        data={sortedData}
-        ListHeaderComponent={
-          <ListHeaderComponent
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            filterModal={filterModal}
-            setFilterModal={setFilterModal}
-          />
-        }
-        stickyHeaderIndices={[0]}
-      />
-      { isLoading && <Text>...loading</Text> }
+      <View style={styles.listContainer}>
+        <VirtualizedList
+          initialNumToRender={4}
+          renderItem={({ item }) => 
+            <Item
+              setModalData={setModalData}
+              item={item}
+              handleStateChange={handleStateChange}
+              setFilterModal={setFilterModal}
+            />
+          }
+          keyExtractor={item => item.id}
+          getItemCount={getItemCount}
+          getItem={getItem}
+          data={sortedData}
+          ListHeaderComponent={
+            <ListHeaderComponent
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              filterModal={filterModal}
+              setFilterModal={setFilterModal}
+            />
+          }
+          stickyHeaderIndices={[0]}
+        />
+        { isLoading && <Text>...loading</Text> }
+      </View>
       <View style={styles.buttonsWrapper}>
-        {/* <Button
-          title={"Add from Receipt"}
-          onPress={() => {
-            
-          }}
-        /> */}
         <FileSelectorComponent setGroceryData={setGroceryData} setIsLoading={setIsLoading}/>
         <Button
           title={"Reset Storage"}
@@ -240,8 +236,14 @@ const MainScreen = () => {
 const styles: any = StyleSheet.create({
   // LIST STYLES
   container: {
-    flex: 1,
+    height: '100%',
     marginTop: StatusBar.currentHeight,
+    justifyContent: 'flex-start',
+    alignContent: 'flex-start',
+  },
+  listContainer: {
+    height: '90%',
+    marginTop: -150,
     justifyContent: 'flex-start',
     alignContent: 'flex-start',
   },
