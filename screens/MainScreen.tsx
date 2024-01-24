@@ -14,7 +14,7 @@ import moment from 'moment';
 import MatIcon from 'react-native-vector-icons/MaterialIcons';
 import { getAllScheduledNotificationsAsync } from 'expo-notifications';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
-import { askNotification } from '../utilities/notifications';
+import { ReminderType, addNotification, askNotification, deleteNotification } from '../utilities/notifications';
 import Item, { getItem, getItemCount } from '../components/Items';
 import ListHeaderComponent from '../components/ListHeaderComponent';
 import ItemModalView from '../components/ItemModalView';
@@ -140,7 +140,7 @@ const MainScreen = () => {
     if (!itemId) { Alert.alert("Unable to delete") }
     if (itemId) {
       loadFromStorage('groceryData')
-        .then((groceryDataObject: any) => {
+        .then( async (groceryDataObject: any) => {
           let newGroceryData = { ...groceryDataObject }
           const todaysDate = moment().format('YYYY-MM-DD');
           const foundIndex = groceryDataObject?.items?.findIndex((groceryDatum: GroceryItemType) => groceryDatum.id === itemId)
@@ -152,6 +152,25 @@ const MainScreen = () => {
             lastUpdateDate: todaysDate,
             itemState: newItemState,
           })
+          // Check and attempt to delete notification if state no longer ACTIVE
+          if (newItemState !== ItemState.ACTIVE) {
+            try {
+              await deleteNotification(groceryDataObject.items[foundIndex], ReminderType.dayOf);
+              await deleteNotification(groceryDataObject.items[foundIndex], ReminderType.before);
+            } catch (error) {
+              console.error('Error occurred:', error);
+            }
+          }
+          // Check and add new notification if Reactivate button selected
+          if (newItemState === ItemState.ACTIVE) {
+            console.log('newItemState:', newItemState, groceryDataObject.items[foundIndex])
+            try {
+              await addNotification(groceryDataObject.items[foundIndex].expiryDate, ReminderType.dayOf);
+              await addNotification(groceryDataObject.items[foundIndex].reminderDate, ReminderType.before);
+            } catch (error) {
+              console.error('Error occurred:', error);
+            }
+          }
           saveToStorage('groceryData', newGroceryData)
           setGroceryData(newGroceryData.items)
         })

@@ -7,7 +7,8 @@ import { NotificationContentInput,
   cancelScheduledNotificationAsync,
 } from 'expo-notifications';
 import { Alert } from 'react-native';
-import { GroceryItemType, loadFromStorage } from './storage';
+import { GroceryItemType, ItemState, loadFromStorage } from './storage';
+import Item from '../components/Items';
 
 
 // First, set the handler that will cause the notification
@@ -79,6 +80,44 @@ export const addScheduledNotification = async (content: NotificationContentInput
 
 /**
  * 
+ * @param toDeleteGroceryItem 
+ * @param reminderType 
+ */
+export const deleteNotification = async (groceryItem: GroceryItemType, reminderType: ReminderType): Promise<void> => {
+  // Source correct Notification date depending on reminderType
+  const dateKey = reminderType === ReminderType.dayOf ? 'expiryDate' : 'reminderDate';
+  const notificationDate = groceryItem[dateKey];
+  // Check see if this notification has unique date (i.e. no other item has same expiry date)
+  loadFromStorage('groceryData')
+    .then( async (groceryDataObject: any) => {
+      // Check if any other grocery item that is ACTIVE has the same date
+      const matchingGroceryItem = groceryDataObject.items.find((groceryDatum: GroceryItemType): boolean => {
+        return groceryDatum[dateKey] === groceryItem[dateKey] && groceryDatum.itemState == ItemState.ACTIVE
+      })
+      console.log('matchingGroceryItem', matchingGroceryItem)
+      // If no matching grocery Item with same expiry or reminder date, then find matching schedule notification & delete
+      if (!matchingGroceryItem) {
+        const scheduledNotifications = await getAllScheduledNotificationsAsync();
+        let notificationDateObj = new Date(notificationDate);
+        const matchingNotification = scheduledNotifications.find((notification: any ) => {
+          return notification.trigger?.dateComponents?.year === notificationDateObj.getFullYear()
+          && notification.trigger?.dateComponents?.month === notificationDateObj.getMonth() + 1
+          && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
+          && notification.content.data.reminderType === reminderType
+        });
+  
+        if (matchingNotification) {
+          await cancelScheduledNotificationAsync(matchingNotification.identifier);
+        }
+      }
+    })
+    .catch((error: any) => {
+      console.log('error', error)
+    });
+}
+
+/**
+ * 
  * @param oldGroceryItem Old GroceryItemType
  * @param newGroceryItem new GroceryItemType
  * @param reminderType dayOf or before
@@ -105,6 +144,7 @@ export const updateNotification = async (oldGroceryItem: GroceryItemType, newGro
           return notification.trigger?.dateComponents?.year === notificationDateObj.getFullYear()
           && notification.trigger?.dateComponents?.month === notificationDateObj.getMonth() + 1
           && notification.trigger?.dateComponents?.day === notificationDateObj.getDate()
+          && notification.content.data.reminderType === reminderType
         });
         if (matchingNotification) {
           await cancelScheduledNotificationAsync(matchingNotification.identifier);
