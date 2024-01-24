@@ -2,16 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import {
   SafeAreaView,
   VirtualizedList,
-  TouchableOpacity,
-  Image,
   StyleSheet,
   StatusBar,
   Button,
   Alert,
   View,
   Text,
+  Pressable,
 } from 'react-native';
 import moment from 'moment';
+import MatIcon from 'react-native-vector-icons/MaterialIcons';
 import { getAllScheduledNotificationsAsync } from 'expo-notifications';
 import storage, { saveToStorage, GroceryItemType, loadFromStorage, ItemState } from '../utilities/storage'
 import { askNotification } from '../utilities/notifications';
@@ -218,23 +218,13 @@ const MainScreen = () => {
             setDevToolData({ isVisible: true, })
           }}
         />
-      </View>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={modalAction}
-        style={styles.touchableOpacityStyle}>
-        <Image
-          // FAB using TouchableOpacity with an image
-          // For online image
-          source={{
-            uri:
-              'https://raw.githubusercontent.com/AboutReact/sampleresource/master/plus_icon.png',
-          }}
-          // For local image
-          //source={require('./images/float-add-icon.png')}
-          style={styles.floatingButtonStyle}
+        <MatIcon
+          name="add-circle"
+          onPress={modalAction}
+          size={50}
+          color="#3b5998"
         />
-      </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -253,27 +243,12 @@ const styles: any = StyleSheet.create({
     justifyContent: 'flex-start',
     alignContent: 'flex-start',
   },
-  touchableOpacityStyle: {
-    position: 'absolute',
-    width: 50,
-    height: 50,
-    alignItems: 'center',
-    justifyContent: 'center',
-    right: 30,
-    bottom: 30,
-  },
-  floatingButtonStyle: {
-    resizeMode: 'contain',
-    width: 50,
-    height: 50,
-  },
   buttonsWrapper: {
-    flex: 1,
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     flexDirection: 'row',
     alignItems: 'center',
-    width: 155,
-    height: 50,
+    width: '100%',
+    height: 55,
   },
 })
 
