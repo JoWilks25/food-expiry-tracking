@@ -1,14 +1,13 @@
 import React from 'react';
 import {
   View,
-  Text,
   Modal,
   Alert,
   StyleSheet,
   Button,
 } from 'react-native';
-// import CheckBox from '@react-native-community/checkbox';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import AntIcon from 'react-native-vector-icons/AntDesign';
 import { filterModalType } from '../screens/MainScreen';
 import { ItemState } from '../utilities/storage';
 
@@ -40,17 +39,29 @@ const FilterModalView = ({ filterModal, setFilterModal }: IProps) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-          <Button onPress={() => {
+          <View style={styles.closeButtonWrapper}>
+              <AntIcon
+                name='close'
+                color='black'
+                size={25}
+                onPress={() => {
+                  setFilterModal({ ...filterModal, isVisible: !filterModal.isVisible, });
+                }}
+              />
+            </View>
+          {/* <Button onPress={() => {
             setFilterModal({ ...filterModal, isVisible: !filterModal.isVisible, });
               }}
-            title="X" />
+            title="X" /> */}
           {
             [ItemState.ACTIVE, ItemState.DELETED, ItemState.EATEN, ItemState.WASTED]?.map((item) => {
               return (
-                <View style={styles.checkbox} key={item}>
+                <View style={styles.checkboxWrapper} key={item}>
                   <BouncyCheckbox
-                    style={{ marginTop: 16 }}
-                    // ref={(ref: any) => (bouncyCheckboxRef = ref)}
+                    fillColor="#3b5998"
+                    textStyle={{
+                      textDecorationLine: "none",
+                    }}
                     isChecked={filterModal.itemStates.includes(item)}
                     text={item}
                     disableBuiltInState
@@ -77,10 +88,10 @@ export const styles: any = StyleSheet.create({
     marginTop: 22,
   },
   modalView: {
-    margin: 20,
+    width: "50%",
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -91,15 +102,21 @@ export const styles: any = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  checkbox: {
+  checkboxWrapper: {
     flexDirection: 'row',
     paddingBottom: 15,
     alignItems: 'center',
     alignSelf: 'flex-start',
   },
-  checkboxText: {
-    paddingLeft: 7.5,
-  }
+  checkbox: {
+    textDecorationLine: 'underline',  
+  },
+  closeButtonWrapper: {
+    width: '100%',
+    display: 'flex',                                                                      
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
 });
 
 export default FilterModalView;
