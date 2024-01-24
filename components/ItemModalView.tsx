@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 import { loadFromStorage, saveToStorage, GroceryItemType, ItemState } from '../utilities/storage';
 import { modalDataType } from '../screens/MainScreen';
 import { DEFAULT_REMINDER, ReminderType, addNotification, updateNotification, DEFAULT_DATE_FORMAT } from '../utilities/notifications';
@@ -177,12 +178,18 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            <Button onPress={() => {
-                setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
-                setFormInputs(defaultFormInputs);
-              }}
-              title="X" />
-            <Text style={styles.modalText}>Name</Text>
+            <View style={styles.closeButtonWrapper}>
+              <AntIcon
+                name="close"
+                color="black"
+                size={25}
+                onPress={() => {
+                  setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
+                  setFormInputs(defaultFormInputs);
+                }}
+              />
+            </View>
+            <Text style={styles.labelText}>Name</Text>
             <TextInput
               style={styles.input}
               onChangeText={(value) => setFormInputs(currState => ({
@@ -191,7 +198,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               }))}
               value={formInputs.name}
             />
-            <Text style={styles.modalText}>Expiry Date</Text>
+            <Text style={styles.labelText}>Expiry Date</Text>
             <DateTimePicker
               testID="dateTimePicker"
               value={formInputs.expiryDate}
@@ -199,9 +206,9 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               is24Hour={true}
               onChange={onChangeDate}
               />
-            <Text style={styles.modalText}>Quantity</Text>
+            <Text style={styles.labelText}>Quantity</Text>
             <TextInput 
-              style={styles.input}
+              style={styles.numberInput}
               keyboardType='numeric'
               onChangeText={(value) => {
                 setFormInputs(currState => ({
@@ -223,24 +230,48 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
 
 
 export const styles: any = StyleSheet.create({
+  labelText: {
+    fontSize: 18,
+    fontWeight: "500",
+    paddingTop: 20,
+    paddingBottom: 5,
+  },
+  closeButtonWrapper: {
+    width: '100%',
+    display: 'flex',                                                                      
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  numberInput: {
+    height: 40,
+    borderWidth: 1,
+    width: 50,
+    padding: 10,
+    textAlign: 'center',
+    borderRadius: 5,
+    borderColor: 'lightgrey',
+  },
   input: {
     height: 40,
-    margin: 12,
     borderWidth: 1,
-    width: 150,
+    minWidth: 250,
+    width: '100%',
     padding: 10,
+    borderRadius: 5,
+    borderColor: 'lightgrey',
   },
   // MODAL STYLES
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   modalView: {
-    margin: 20,
+    width: '90%',
+    marginTop: '20%',
     backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
+    padding: 20,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -250,26 +281,6 @@ export const styles: any = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: '#F194FF',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3',
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
   },
 });
 
