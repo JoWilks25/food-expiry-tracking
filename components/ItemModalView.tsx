@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   Button,
+  Pressable,
 } from 'react-native';
 import moment from 'moment';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -66,10 +67,10 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
 
   const handleEditAdd = () => {
     if (!formInputs.name) {
-      return Alert.alert("Please enter a name!");
+      return Alert.alert('Please enter a name!');
     }
     if (Number(formInputs.units) < 1) {
-      return Alert.alert("Please select a quantity greater than 0!")
+      return Alert.alert('Please select a quantity greater than 0!')
     }
     loadFromStorage('groceryData')
       .then( async (groceryDataObject: any) => {
@@ -85,7 +86,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             formInputs.name !== groceryDataObject.items[foundIndex].name
             && expiryDate !== groceryDataObject.items[foundIndex].expiryDate
           ) {
-            Alert.alert("No Changes Made");
+            Alert.alert('No Changes Made');
             return;
           }
           // Create new object
@@ -100,7 +101,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           if (expiryDate !== groceryDataObject.items[foundIndex].expiryDate) {
             // Check if items expiry date is greater than today
             if (moment(expiryDate).isSameOrBefore(moment())) {
-              Alert.alert("Please select an expiry date greater than today");
+              Alert.alert('Please select an expiry date greater than today');
               return;
             }
             // Update notification if necessary
@@ -132,7 +133,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           }
           // Check if items expiry date is greater than today
           if (moment(expiryDate).isSameOrBefore(moment())) {
-            Alert.alert("Please select an expiry date greater than today");
+            Alert.alert('Please select an expiry date greater than today');
             return;
           }
           // Update or Add Notification for items expiry date
@@ -169,7 +170,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
   return (
     <View style={styles.centeredView}>
       <Modal
-        animationType="slide"
+        animationType='slide'
         transparent={true}
         visible={modalData.isVisible}
         onRequestClose={() => {
@@ -180,8 +181,8 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
           <View style={styles.modalView}>
             <View style={styles.closeButtonWrapper}>
               <AntIcon
-                name="close"
-                color="black"
+                name='close'
+                color='black'
                 size={25}
                 onPress={() => {
                   setModalData({ selectedId: null, isVisible: !modalData.isVisible, });
@@ -200,7 +201,7 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
             />
             <Text style={styles.labelText}>Expiry Date</Text>
             <DateTimePicker
-              testID="dateTimePicker"
+              testID='dateTimePicker'
               value={formInputs.expiryDate}
               mode={'date'}
               is24Hour={true}
@@ -218,9 +219,11 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
               }}
               value={String(formInputs.units)}
               maxLength={10}  //setting limit of input
-              returnKeyType="done"
+              returnKeyType='done'
             />
-            <Button title={modalData?.selectedId ? "Save" : "Add"} onPress={handleEditAdd}/>
+            <Pressable style={styles.button} onPress={handleEditAdd}>
+              <Text style={styles.buttonText}>{modalData?.selectedId ? 'SAVE' : 'ADD'}</Text>
+            </Pressable>
           </View>
         </View>
       </Modal>
@@ -230,9 +233,22 @@ const ItemModalView = ({ modalData, setModalData, groceryData, setGroceryData }:
 
 
 export const styles: any = StyleSheet.create({
+  button: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#3b5998',
+    borderRadius: 10,
+    width: 100,
+  },
+  buttonText: {
+    fontSize: 20,
+    textAlign: 'center',
+    fontWeight: '500',
+    color: 'white',
+  },
   labelText: {
     fontSize: 18,
-    fontWeight: "500",
+    fontWeight: '500',
     paddingTop: 20,
     paddingBottom: 5,
   },
